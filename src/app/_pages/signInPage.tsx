@@ -1,4 +1,5 @@
 import { SignInButton } from "../_components/authButtons"
+import Image from 'next/image'
 
 export function SignInPage() {
     return (
@@ -15,7 +16,14 @@ export function SignInPage() {
                 </div>
             </div>
             <div className="flex flex-col items-center justify-center w-1/2">
-                <img src='/airtable.svg' className="w-1/2 h-1/2"></img>
+                <div className="relative w-[25vw] h-[50vh]">
+                    <Image 
+                        src="/airtable.svg"
+                        alt="airtableLogo"
+                        fill
+                    />
+                </div>
+                
                 <h3 className="text-6xl font-bold mb-2 w-full text-center">
                     Airtable
                 </h3>
