@@ -8,6 +8,7 @@
  */
 
 import { initTRPC, TRPCError } from "@trpc/server";
+import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -26,7 +27,7 @@ import { db } from "~/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: { headers: ReadonlyHeaders }) => {
   const session = await auth();
 
   return {

@@ -11,32 +11,35 @@ import {
 import { api } from "~/trpc/react";
 
 type TableDataItemProps = {
-  tableData?: Table | null;
+  tableData: Table;
 };
 
-export function TableData({ tableData }: TableDataItemProps) {
-    if (!tableData) {
-        return (
-            <div>
+type RowData = {
+  cells: {
+    id: number;
+    value: string;
+    fieldId: number;
+    rowId: number;
+  }[];
+  id: number;
+  tableId: number;
+};
 
-            </div>
-        )
-    }
+
+export function TableData({ tableData }: TableDataItemProps) {
+
     const { data: columns } = api.table.getFields.useQuery({ tableId: tableData.id }); 
     const { data: rows } = api.table.getRowsWithCells.useQuery({ tableId: tableData.id });
 
-    const tableColumns: ColumnDef<any>[] = columns?.map((field) => ({
+    const tableColumns: ColumnDef<RowData>[] = columns?.map((field) => ({
         accessorKey: field.name,
         header: field.name,
         cell: (value) => value.getValue(),
     })) ?? [];
 
-    console.log(tableColumns)
-
-
     const table = useReactTable({
         data: rows ?? [],
-        columns: tableColumns,
+        columns: tableColumns ?? [],
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });

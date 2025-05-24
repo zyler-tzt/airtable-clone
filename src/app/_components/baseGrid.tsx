@@ -1,7 +1,6 @@
 "use client"
 import { api } from "~/trpc/react";
 import { BaseItem, CreateBaseItem } from "./baseItem";
-import { useState } from "react";
 
 export function BaseGrid() {
     const { data: bases, isLoading } = api.base.getBases.useQuery();
