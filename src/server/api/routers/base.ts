@@ -45,6 +45,25 @@ export const baseRouter = createTRPCRouter({
         where: { id: input.baseId },
       });
     }),
-    
+  
+  getBaseBySlug: protectedProcedure
+    .input(z.object({ slug: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const base = await ctx.db.base.findUnique({
+        where: { slug: input.slug },
+      });
+    return base;
+  }),
+
+  getFirstTableByBaseId: protectedProcedure
+    .input(z.object({ baseId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const table = await ctx.db.table.findFirst({
+        where: { baseId: input.baseId },
+      });
+
+      return table
+    }),
+
 });
 

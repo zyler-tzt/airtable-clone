@@ -1,3 +1,5 @@
+"use client"
+
 import type { Base } from '@prisma/client';
 import Image from 'next/image'
 import {
@@ -15,14 +17,16 @@ import { Button } from "~/app/_components/ui/button"
 import { Input } from "~/app/_components/ui/input"
 import { Label } from "~/app/_components/ui/label"
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type BaseItemProps = {
   base: Base;
 };
 
 export function BaseItem({ base }: BaseItemProps) {
+    const router = useRouter();
     return (
-        <div className="flex flex-row border-2 border-gray-300 rounded-lg items-center justify-start pl-5 h-50">
+        <div className="flex flex-row border-2 border-gray-300 rounded-lg items-center justify-start pl-5 h-50" onClick={() => router.push(`/${base.slug}`)}>
             <div>
                 <Image
                     src="/airtable-base.png"
