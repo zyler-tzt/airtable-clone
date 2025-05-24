@@ -4,13 +4,14 @@ import Image from 'next/image'
 
 export function HomePage() {
     return (
-        <div className="flex flex-col items-center justify-center h-screen w-screen">
+        <div className="flex flex-col items-center justify-center h-screen w-screen select-none">
             <div className="flex flex-row gap-4 h-[8vh] shadow w-full">
                 <div className="flex pl-5 items-center justify-left w-1/2 text-lg">
                     <div className="relative mr-3 h-8 w-10">
                         <Image 
                             src="/airtable.svg"
                             alt="airtableLogo"
+                            draggable={false}
                             fill
                         />
                     </div>
@@ -23,7 +24,7 @@ export function HomePage() {
             </div>
             <div className="flex flex-col justify-start h-[92vh] w-full p-5 gap-5">
                 <div className="text-2xl">Home</div>
-                <div className="">
+                <div className="pb-5">
                     <BaseGrid/>
                 </div>
             </div>

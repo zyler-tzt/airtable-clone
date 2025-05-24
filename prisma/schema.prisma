@@ -19,11 +19,61 @@ model Base {
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    numTables Int      @default(autoincrement())
+    slug      String
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
     createdById String
 
+    tables    Table[]
+
     @@index([name])
+}
+
+model Table {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String
+
+  base      Base     @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  baseId    Int
+
+  fields    Field[]
+  rows      Row[]
+}
+
+model Field {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      String
+  //pos     Int reminder to self: uncomment when implement field pos changing
+
+  table     Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId   Int
+
+  cells     Cell[]
+}
+
+model Row {
+  id        Int      @id @default(autoincrement())
+
+  table     Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId   Int
+
+  cells     Cell[]
+}
+
+model Cell {
+  id        Int      @id @default(autoincrement())
+  value     String
+
+  field     Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId   Int
+
+  row       Row      @relation(fields: [rowId], references: [id], onDelete: Cascade)
+  rowId     Int
+
+  @@unique([fieldId, rowId])
 }
 
 model User {

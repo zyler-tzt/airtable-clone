@@ -16,6 +16,7 @@ export function BaseItem({ base }: BaseItemProps) {
                 <Image
                     src="/airtable-base.png"
                     alt="airtableBaseImg"
+                    draggable={false}
                     width={96}         
                     height={96}  
                 />                
@@ -38,6 +39,7 @@ export function CreateBaseItem({ onClick }: CreateBaseItemProps) {
             <Image 
                 src="/add-lucide.svg"
                 alt="addBaseImage"
+                draggable={false}
                 width={40}         
                 height={40} 
             />

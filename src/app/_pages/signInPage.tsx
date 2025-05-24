@@ -20,6 +20,7 @@ export function SignInPage() {
                     <Image 
                         src="/airtable.svg"
                         alt="airtableLogo"
+                        draggable={false}
                         fill
                     />
                 </div>
