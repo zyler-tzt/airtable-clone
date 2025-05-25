@@ -31,6 +31,11 @@ export const baseRouter = createTRPCRouter({
                       type: "number",
                     },
                   ],
+                },
+                rows: {
+                  create: [
+                    {}, {}, {},
+                  ]
                 }
               }
             ]
