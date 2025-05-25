@@ -15,17 +15,28 @@ export const baseRouter = createTRPCRouter({
           name: input.name,
           slug: nanoid(10),
           createdBy: { connect: { id: ctx.session.user.id } },
+          tables: {
+            create: [
+              {
+                name: "Table 1",
+                slug: nanoid(10),
+                fields: {
+                  create: [
+                    {
+                      name: "Field 1",
+                      type: "text", 
+                    },
+                    {
+                      name: "Field 2",
+                      type: "number",
+                    },
+                  ],
+                }
+              }
+            ]
+          }
         },
       });
-
-      await ctx.db.table.create({
-        data: {
-          name: "Table 1",
-          slug: nanoid(10),
-          baseId: base.id,
-        },
-      });
-
 
       return base;
     }),
@@ -51,6 +62,9 @@ export const baseRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const base = await ctx.db.base.findUnique({
         where: { slug: input.slug },
+        include: {
+          tables: true
+        }
       });
     return base;
   }),

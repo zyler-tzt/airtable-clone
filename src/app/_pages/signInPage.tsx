@@ -1,4 +1,4 @@
-import { SignInButton } from "../_components/authButtons"
+import { SignInButton } from "../_components/homePage/authButtons"
 import Image from 'next/image'
 
 export function SignInPage() {

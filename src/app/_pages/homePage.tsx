@@ -1,5 +1,5 @@
-import { SignOutButton } from "../_components/authButtons"
-import { BaseGrid } from "../_components/baseGrid"
+import { SignOutButton } from "../_components/homePage/authButtons"
+import { BaseGrid } from "../_components/homePage/baseGrid"
 import Image from 'next/image'
 
 export function HomePage() {

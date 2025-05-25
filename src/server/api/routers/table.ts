@@ -14,13 +14,27 @@ export const tableRouter = createTRPCRouter({
         baseId: z.number(),
       }),)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.table.create({
+      const table = await ctx.db.table.create({
         data: {
           name: input.name,
           slug: nanoid(10),
           base: { connect: { id: input.baseId } },
+          fields: {
+            create: [
+              {
+                name: "Field 1",
+                type: "text", 
+              },
+              {
+                name: "Field 2",
+                type: "number",
+              },
+            ],
+          }
         },
       });
+
+      return table;
     }),
 
   getTables: protectedProcedure
@@ -30,7 +44,15 @@ export const tableRouter = createTRPCRouter({
         where: { baseId: input.baseId },
       });
     }),
-  
+
+  getTableByTableId: protectedProcedure
+    .input(z.object({ tableId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.table.findUnique({
+        where: { id: input.tableId },
+      });
+    }),
+
   getFields: protectedProcedure
   .input(z.object({ tableId: z.number() }))
   .query(({ ctx, input }) => {
