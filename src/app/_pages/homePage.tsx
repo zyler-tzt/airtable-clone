@@ -22,7 +22,7 @@ export function HomePage() {
                 </div>
                 
             </div>
-            <div className="flex flex-col justify-start h-[92vh] w-full p-5 gap-5">
+            <div className="flex flex-col justify-start h-[92vh] w-full p-5 gap-5 overflow-y-auto scrollbar-none">
                 <div className="text-2xl">Home</div>
                 <div className="pb-5">
                     <BaseGrid/>
