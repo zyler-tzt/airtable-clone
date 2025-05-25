@@ -46,9 +46,12 @@ export const baseRouter = createTRPCRouter({
       return base;
     }),
 
-  getBases: protectedProcedure.query(async ({ ctx }) => {
+  getBases: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
     const bases = await ctx.db.base.findMany({
       orderBy: { createdAt: "desc" },
+      where: { createdById: input.userId }
     });
 
     return bases

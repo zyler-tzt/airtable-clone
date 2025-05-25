@@ -1,9 +1,12 @@
 "use client"
 import { api } from "~/trpc/react";
 import { BaseItem, CreateBaseItem } from "./baseItem";
+import { useSession } from "next-auth/react";
 
 export function BaseGrid() {
-    const { data: bases, isLoading } = api.base.getBases.useQuery();
+    const { data: session } = useSession();
+    console.log(session)
+    const { data: bases, isLoading } = api.base.getBases.useQuery({ userId: session?.user.id ?? ""});
 
     if (isLoading) return <div className="text-xl text-gray-500">Please wait while we fetch your base :D</div>;
 
