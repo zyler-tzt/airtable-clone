@@ -8,7 +8,7 @@ import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "AirtableClone",
-  description: "Logo of Airtable",
+  description: "Simple Clone of Airtable",
   icons: [{ rel: "icon", url: "/airtable.svg" }],
 };
 
