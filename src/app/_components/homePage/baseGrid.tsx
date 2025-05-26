@@ -12,7 +12,7 @@ export function BaseGrid() {
 
     return (
         <div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 overflow-x-auto scrollbar-none">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 overflow-x-auto scrollbar-none">
                 <CreateBaseItem/>
                 {
                     bases?.map((base) => {

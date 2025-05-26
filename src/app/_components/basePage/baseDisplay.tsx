@@ -1,7 +1,7 @@
 "use client"
 import { api } from "~/trpc/react";
 import { useParams } from "next/navigation"
-import { TableData } from "./tableData";
+import { TableDisplay } from "./tableDisplay";
 import { BaseHeader } from "./baseHeader";
 import { BaseTableList } from "./baseTableList";
 import { useEffect, useState } from "react";
@@ -35,7 +35,7 @@ export function BaseDisplay() {
                 </div>
                 <div>
                     {
-                        table ? <TableData tableData={table} /> : <div></div>
+                        table ? <TableDisplay tableData={table} /> : <div></div>
                     }
                 </div>
             </div>

@@ -93,4 +93,25 @@ export const tableRouter = createTRPCRouter({
       });
     }),
 
+  createField: protectedProcedure
+    .input(z.object({ tableId: z.number(), fieldName: z.string().min(1), fieldType: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.field.create({
+        data: {
+          name: input.fieldName,
+          type: input.fieldType,
+          table: { connect: { id: input.tableId } },
+        }
+      });
+    }),
+
+  createRow: protectedProcedure
+    .input(z.object({ tableId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.row.create({
+        data: {
+          table: { connect: { id: input.tableId } },
+        }
+      });
+    }),
 });

@@ -26,17 +26,17 @@ type BaseItemProps = {
 export function BaseItem({ base }: BaseItemProps) {
     const router = useRouter();
     return (
-        <div className="flex flex-row border-2 border-gray-300 rounded-lg items-center justify-start pl-5 h-30" onClick={() => router.push(`/${base.slug}`)}>
-            <div>
+        <div className="flex flex-row border-2 border-gray-300 rounded-lg items-center justify-center md:h-30 lg:h-30 sm:h-30 hover:shadow-md mb-1" onClick={() => router.push(`/${base.slug}`)}>
+            <div className='w-[30%] flex justify-end'>
                 <Image
                     src="/airtable-base.png"
                     alt="airtableBaseImg"
                     draggable={false}
-                    width={50}         
-                    height={50}  
+                    width={70}         
+                    height={70}  
                 />                
             </div>
-            <div className='flex flex-col gap-4 p-5'>
+            <div className='flex flex-col gap-4 p-5 w-[60%] overflow-hidden'>
                 <div className='text-md'>
                     {base.name}
                 </div>
@@ -69,7 +69,7 @@ export function CreateBaseItem() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <div className='flex items-center justify-center border-2 border-gray-300 rounded-lg h-30'>
+                <div className='flex items-center justify-center border-2 border-gray-300 rounded-lg h-30 mb-1 hover:shadow-md'>
                     <Image 
                         src="/add-lucide.svg"
                         alt="addBaseIcon"

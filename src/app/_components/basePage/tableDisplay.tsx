@@ -12,14 +12,17 @@ import type { CellContext } from "@tanstack/react-table";
 
 import { api } from "~/trpc/react";
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { TableCell } from "./tableCell";
+import { AddFieldButton } from "./addFieldButton";
+import { AddRowButton } from "./addRowButton";
 
 
 type TableDataItemProps = {
   tableData: Table;
 };
 
-type RowData = {
+export type RowData = {
   cells: {
     id: number;
     value: string;
@@ -30,39 +33,68 @@ type RowData = {
   tableId: number;
 };
 
+interface CustomColumnMeta {
+  type?: string;
+}
 
-export function TableData({ tableData }: TableDataItemProps) {
+function classParser(meta?: CustomColumnMeta) {
+    if (!meta) return "";
+    if (meta.type === "text") {
+        return "justify-start"
+    } else if (meta.type === "number") {
+        return "justify-end"
+    } else if (meta.type === "id") {
+        return "justify-center"
+    }
+}
+
+export function TableDisplay({ tableData }: TableDataItemProps) {    
+    const [extendedRows, setExtendedRows] = useState<RowData[]>([])
 
     const { data: columns } = api.table.getFields.useQuery({ tableId: tableData.id }); 
     const { data: rows } = api.table.getRowsWithCells.useQuery({ tableId: tableData.id });
 
+    useEffect(() => {
+        setExtendedRows(rows ? [...rows, { id: -1, tableId: tableData.id, cells: [] }] : [])
+    }, [rows])
+
     const tableColumns: ColumnDef<RowData>[] = [
         {
             id: 'rowNums',
-            header: '#',
+            header: '',
             cell: (info) => info.row.index + 1,
-            size: 10,
+            meta: {type: 'id'},
+            size: 40,
         },
         ...columns?.map((field) => ({
+            id: String(field.id),
             accessorKey: field.name,
-            header: field.name,
-            cell: (value: CellContext<RowData, unknown>) => value.getValue(),
+            header: () => {
+                return (
+                    <div className="w-full h-full px-3">{field.name}</div>
+                )
+            },
+            meta: {type: field.type},
+            cell: (value: CellContext<RowData, unknown>) => {
+                return (
+                    <TableCell value={value}/>
+                )
+            },
         })) ?? [],
         {
             id: 'addCols',
-            header: () => (
-            <div
-            >
-                Add
-            </div>
-            ),
+            header: () => {
+                return (
+                    <AddFieldButton tableId={tableData.id}/>
+                )
+            },
             cell: () => null,
-            size: 30,
+            size: 40,
         },
     ];
 
     const table = useReactTable({
-        data: rows ?? [],
+        data: extendedRows,
         columns: tableColumns ?? [],
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -71,7 +103,7 @@ export function TableData({ tableData }: TableDataItemProps) {
     const tableParentRef = useRef(null);
 
     const rowVirtualizer = useVirtualizer({
-        count: rows === undefined ? 0 : rows.length,
+        count: table.getRowModel().rows.length,
         getScrollElement: () => tableParentRef.current,
         estimateSize: () => 40, 
         overscan: 10, 
@@ -87,7 +119,7 @@ export function TableData({ tableData }: TableDataItemProps) {
                         {headerGroup.headers.map((header) => (
                             <div
                                 key={header.id}
-                                className="px-3 py-2 text-left border-r border-gray-200 last:border-r-0 bg-gray-50 flex-shrink-0"
+                                className={`py-2 border-r border-gray-200 last:border-r-0 bg-gray-50 flex-shrink-0`}
                                 style={{ width: header.getSize() }}
                             >
                                 {flexRender(header.column.columnDef.header, header.getContext())}
@@ -114,12 +146,19 @@ export function TableData({ tableData }: TableDataItemProps) {
                         }}
                     >
                         {row.getVisibleCells().map((cell) => {
-                            console.log(cell.column.id);
                             if (cell.column.id === "addCols") return null; 
+                            if (cell.row.original.id === -1 && cell.column.id != "rowNums") return null;
+                            if (cell.row.original.id === -1) return (
+                                <div key="addColButton" className={`border-b border-r border-gray-200 text-sm flex items-center justify-center flex-shrink-0 hover:bg-gray-50`}
+                                    style={{ width: cell.column.getSize() }}>
+                                    <AddRowButton key="rowAddButton" tableId={tableData.id} />
+                                </div>
+                            )
                             return (
                                 <div
                                     key={cell.id}
-                                    className="px-3 py-2 border-b border-r border-gray-200  text-sm flex items-center flex-shrink-0 hover:bg-gray-50"
+                                    className={`border-b border-r border-gray-200  text-sm flex items-center flex-shrink-0 hover:bg-gray-50
+                                    ${classParser(cell.column.columnDef.meta)}`}
                                     style={{ width: cell.column.getSize() }}
                                 >
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
