@@ -97,7 +97,7 @@ export function CreateBaseItem() {
                     onChange={(e) => setNewBaseName(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
-                            void baseCreateHandler();
+                            void baseCreateHandler()
                         }
                     }}
                     disabled={createBase.isPending}

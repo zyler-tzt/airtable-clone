@@ -1,6 +1,6 @@
 export function BaseTools() {
     return (
-        <div className="h-8 shadow-sm">
+        <div className="h-[5vh] shadow-sm">
             Tools
         </div>
     )

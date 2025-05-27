@@ -30,10 +30,10 @@ export function BaseDisplay() {
             <BaseTableList base={base} selectedTable={selectedTableId} setSelectedTable={setSelectedTableId}/>
             <BaseTools />
             <div className='flex flex-row'>
-                <div>
+                <div className="w-[15vw]">
                     View
                 </div>
-                <div>
+                <div className="w-[85vw]">
                     {
                         table ? <TableDisplay tableData={table} /> : <div></div>
                     }

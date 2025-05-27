@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { TableCell } from "./tableCell";
 import { AddFieldButton } from "./addFieldButton";
 import { AddRowButton } from "./addRowButton";
+import { Button } from "../ui/button";
 
 
 type TableDataItemProps = {
@@ -40,9 +41,9 @@ interface CustomColumnMeta {
 function classParser(meta?: CustomColumnMeta) {
     if (!meta) return "";
     if (meta.type === "text") {
-        return "justify-start"
+        return "text-left"
     } else if (meta.type === "number") {
-        return "justify-end"
+        return "text-right"
     } else if (meta.type === "id") {
         return "justify-center"
     }
@@ -53,6 +54,8 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
 
     const { data: columns } = api.table.getFields.useQuery({ tableId: tableData.id }); 
     const { data: rows } = api.table.getRowsWithCells.useQuery({ tableId: tableData.id });
+    const utils = api.useUtils();
+    
 
     useEffect(() => {
         setExtendedRows(rows ? [...rows, { id: -1, tableId: tableData.id, cells: [] }] : [])
@@ -64,11 +67,13 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
             header: '',
             cell: (info) => info.row.index + 1,
             meta: {type: 'id'},
-            size: 40,
+            size: 60,
         },
         ...columns?.map((field) => ({
             id: String(field.id),
-            accessorKey: field.name,
+            accessorFn: (row: RowData) => {
+                return row.cells.find((c) => c.fieldId === field.id)?.value ?? "";
+            },
             header: () => {
                 return (
                     <div className="w-full h-full px-3">{field.name}</div>
@@ -111,8 +116,26 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
 
     const virtualRows = table.getRowModel().rows;
 
+    const fakerFieldMapper = columns?.map(c => ({fieldId: c.id, fieldType: c.type}))
+
+    const create1kRows = api.cell.create1kRows.useMutation({
+        onSuccess: async () => {
+            await utils.table.invalidate();
+        },
+    });
+
+    async function create1kRowsHandler() {
+        await create1kRows.mutateAsync({ fieldInfo: fakerFieldMapper ?? [], tableId: tableData.id }) 
+    }
+
+    if (!rows || !columns) {
+        return (
+            <div className="text-xl text-gray-500">Please wait while we fetch your base :D</div>
+        )
+    }
+
     return (
-        <div ref={tableParentRef}>
+        <div>
             <div className="sticky top-0 bg-gray-50 border border-gray-200">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <div key={headerGroup.id} className="flex">
@@ -129,20 +152,25 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
                 ))}
             </div>
             <div
-                className="w-full relative border-l border-gray-200"
-                style={{
-                    height: `${rowVirtualizer.getTotalSize()}px`,
-                }}
+                ref={tableParentRef}
+                className="h-[68vh] w-full overflow-auto border-l border-gray-200"
             >
+                <div
+                    className="relative w-full"
+                    style={{
+                        height: `${rowVirtualizer.getTotalSize()}px`,
+                    }}
+                >
                 {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                     const row = virtualRows[virtualRow.index]
                     if (!row) return null;
                     return (
                     <div
                         key={row.id}
-                        className={`w-full flex flex-row h-10 flex-shrink-0`}
+                        className={`absolute top-0 left-0 w-full flex`}
                         style={{
                             height: `${virtualRow.size}px`,
+                            transform: `translateY(${virtualRow.start}px)`,
                         }}
                     >
                         {row.getVisibleCells().map((cell) => {
@@ -157,7 +185,7 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
                             return (
                                 <div
                                     key={cell.id}
-                                    className={`border-b border-r border-gray-200  text-sm flex items-center flex-shrink-0 hover:bg-gray-50
+                                    className={`border-b border-r border-gray-200  text-sm flex items-center hover:bg-gray-50
                                     ${classParser(cell.column.columnDef.meta)}`}
                                     style={{ width: cell.column.getSize() }}
                                 >
@@ -167,7 +195,11 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
                     }
                     </div>
                 )})}
+                </div>
             </div>
+            <Button variant="outline" className="fixed bottom-6 right-8" onClick={create1kRowsHandler}>
+                Add 1k Rows
+            </Button>
         </div>
     )
 }

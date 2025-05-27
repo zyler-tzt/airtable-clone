@@ -70,15 +70,11 @@ export const tableRouter = createTRPCRouter({
   getRowsWithCells: protectedProcedure
     .input(z.object({
       tableId: z.number(),
-      offset: z.number().min(0).default(0),
-      limit: z.number().min(1).max(100).default(30),
     }))
     .query(({ ctx, input }) => {
       return ctx.db.row.findMany({
         where: { tableId: input.tableId },
         orderBy: { id: 'asc' },
-        skip: input.offset,
-        take: input.limit,
         include: {
           cells: true,
         },

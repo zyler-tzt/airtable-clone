@@ -16,7 +16,7 @@ type BaseTableListProps = {
 
 export function BaseTableList({ base, selectedTable, setSelectedTable }: BaseTableListProps) {
     return (
-        <div className="bg-green-800 h-9 w-full overflow-x-auto whitespace-nowrap scrollbar-none">
+        <div className="bg-green-800 h-[5vh] w-full overflow-x-auto whitespace-nowrap scrollbar-none">
             { base && <div className="flex flex-row px-5 h-9 w-max">
                 {base.tables.map(table => {
                     return (

@@ -9,7 +9,7 @@ type BaseHeaderProps = {
 export function BaseHeader({ baseName } : BaseHeaderProps) {
     const router = useRouter()
     return (
-        <div className="h-13 bg-green-700">
+        <div className="h-[8vh] bg-green-700">
             { baseName &&
                 <div className='flex flex-row items-center justify-between text-white text-lg h-full'>
                     <div className="pl-5 flex flex-row items-center justify-center select-none">
