@@ -80,8 +80,10 @@ export function TableCell({ value }: TableCellProps) {
                     }
                 }
             }}
-            onBlur={() => setIsEditing(false)}
-
+            onBlur={() => {
+                void changeCellHandler();
+                setIsEditing(false)
+            }}
         />
     )
 }

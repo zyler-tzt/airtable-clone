@@ -147,7 +147,7 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
 
   const create100kRows = api.cell.create1kRows.useMutation({
     onSuccess: async () => {
-      await utils.table.getRowsWithCells.invalidate({ tableId: tableData.id })
+      await utils.cell.infiniteRows.invalidate({ tableId: tableData.id })
     },
   })
 

@@ -77,7 +77,8 @@ export const cellRouter = createTRPCRouter({
     )
   }))
   .mutation(async ({ ctx, input }) => {
-    const rowsData = Array.from({ length: 10000 }, () => ({
+    const ROW_TO_CREATE = 100
+    const rowsData = Array.from({ length: ROW_TO_CREATE }, () => ({
       tableId: input.tableId,
     }));
 
@@ -88,7 +89,7 @@ export const cellRouter = createTRPCRouter({
     const rows = await ctx.db.row.findMany({
       where: { tableId: input.tableId },
       orderBy: { id: "desc" },
-      take: 10000,
+      take: ROW_TO_CREATE,
     });
 
 
