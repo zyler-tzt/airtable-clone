@@ -76,7 +76,7 @@ export const cellRouter = createTRPCRouter({
     )
   }))
   .mutation(async ({ ctx, input }) => {
-    const rowsData = Array.from({ length: 100000 }, () => ({
+    const rowsData = Array.from({ length: 10000 }, () => ({
       tableId: input.tableId,
     }));
 

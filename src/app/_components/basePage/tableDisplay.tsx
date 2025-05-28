@@ -198,7 +198,7 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
                 </div>
             </div>
             <Button variant="outline" className="fixed bottom-6 right-8" onClick={create1kRowsHandler}>
-                Add 1k Rows
+                Add 10k Rows
             </Button>
         </div>
     )
