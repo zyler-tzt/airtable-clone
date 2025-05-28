@@ -11,6 +11,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
+import next from "next";
 
 export const cellRouter = createTRPCRouter({
   updateCell: protectedProcedure
@@ -87,6 +88,7 @@ export const cellRouter = createTRPCRouter({
     const rows = await ctx.db.row.findMany({
       where: { tableId: input.tableId },
       orderBy: { id: "desc" },
+      take: 10000,
     });
 
 
@@ -106,4 +108,33 @@ export const cellRouter = createTRPCRouter({
       data: cellsArray,
     });
   }),
+
+  infiniteRows: protectedProcedure
+  .input(
+    z.object({
+      tableId: z.number(),
+      cursor: z.number().nullish(),
+      limit: z.number().optional().default(1000),
+    })
+  )
+  .query(async ({ ctx, input }) => {
+    const rows = await ctx.db.row.findMany({
+      where: {
+        tableId: input.tableId,
+        id: input.cursor ? { gte: input.cursor } : undefined,
+      },
+      take: input.limit + 1,
+      orderBy: { id: "asc" },
+      include: {
+          cells: true,
+        },
+    });
+    const nextCursor = rows.length > input.limit ? rows.pop()!.id : null;
+
+    return {
+      rows,
+      nextCursor,
+    };
+  }),
+
 });

@@ -8,7 +8,6 @@ interface TableCellProps {
     value: CellContext<RowData, unknown>
 }
 export function TableCell({ value }: TableCellProps) {
-    console.log(value.getValue())
     const rowId = value.row.original.id;
     const fieldId = parseInt(value.column.id);
     const rowIndex = value.row.index;
@@ -51,7 +50,6 @@ export function TableCell({ value }: TableCellProps) {
     
     async function changeCellHandler() {
         const newVal = (parseValue(cellValue)).trim()
-        console.log(value)
         if (newVal === "" && cellExist) await deleteCell.mutateAsync({ fieldId, rowId })
         if (!cellExist && newVal !== "") await createCell.mutateAsync({ value: newVal, fieldId, rowId }) 
         if (cellExist && newVal !== "") await updateCell.mutateAsync({ value: newVal, fieldId, rowId }) 
