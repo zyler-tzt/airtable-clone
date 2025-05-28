@@ -14,6 +14,53 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model View {
+  id        Int       @id @default(autoincrement())
+  name      String
+
+  table     Table     @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId   Int
+
+  sortings  Sorting[]
+  filters   Filter[]
+  fields    ViewField[]
+}
+
+model Sorting {
+  id        Int     @id @default(autoincrement())
+  order     String
+
+  view      View    @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId    Int
+
+  field     Field   @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId   Int
+}
+
+model Filter {
+  id        Int     @id @default(autoincrement())
+  operator  String 
+  value     String
+
+  view      View    @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId    Int
+
+  field     Field   @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId   Int
+}
+
+model ViewField {
+  id        Int     @id @default(autoincrement())
+
+  view      View    @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId    Int
+
+  field     Field   @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId   Int
+
+  @@unique([viewId, fieldId])
+}
+
 model Base {
     id        Int      @id @default(autoincrement())
     name      String
@@ -40,6 +87,7 @@ model Table {
 
   fields    Field[]
   rows      Row[]
+  view      View[]
 }
 
 model Field {
@@ -52,6 +100,9 @@ model Field {
   tableId   Int
 
   cells     Cell[]
+  viewFields ViewField[]
+  sorting   Sorting[]
+  filter    Filter[]
 }
 
 model Row {
