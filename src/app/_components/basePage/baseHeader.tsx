@@ -11,7 +11,7 @@ export function BaseHeader({ baseName } : BaseHeaderProps) {
     return (
         <div className="h-[8vh] bg-green-700">
             { baseName &&
-                <div className='flex flex-row items-center justify-between text-white text-lg h-full'>
+                <div className='flex flex-row items-center justify-between text-white text-sm h-full'>
                     <div className="pl-5 flex flex-row items-center justify-center select-none">
                         <div className="relative mr-3 h-6 w-6   cursor-pointer"
                             onClick={() => router.push('/')}>
@@ -29,6 +29,13 @@ export function BaseHeader({ baseName } : BaseHeaderProps) {
                     </div>
                 </div>    
             }        
+        </div>
+    )
+}
+
+export function EmptyBaseHeader() {
+    return (
+        <div className="h-[8vh] bg-green-700">
         </div>
     )
 }

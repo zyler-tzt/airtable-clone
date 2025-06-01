@@ -10,7 +10,8 @@ export function SignInButton() {
               src="/google.svg"
               alt="googleLogo"
               width={24}         
-              height={24}             
+              height={24}    
+              draggable={false}
             />
             Sign In with Google
         </button>

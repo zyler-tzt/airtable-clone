@@ -12,7 +12,7 @@ export function AddRowButton({ tableId }: AddRowButtonProps) {
 
     const createRow = api.table.createRow.useMutation({
         onSuccess: async () => {
-            await utils.table.invalidate();
+            await utils.cell.invalidate();
         },
     });
 

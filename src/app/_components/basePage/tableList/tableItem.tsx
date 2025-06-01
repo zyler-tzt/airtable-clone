@@ -8,15 +8,17 @@ import {
 import { Button } from "~/app/_components/ui/button"
 import { Input } from "~/app/_components/ui/input"
 import { useState } from "react";
-import type { Table } from "@prisma/client"
+import type { Table, View } from "@prisma/client"
 
 type TableItemProps = {
     table: Table
     selectedTable: number | undefined | null;
     setSelectedTable: (id: number) => void
+    setViewId: (id: number) => void
+    views: View[]
 }
 
-export function TableItem({ table, selectedTable, setSelectedTable }: TableItemProps) {
+export function TableItem({ table, selectedTable, setSelectedTable, setViewId, views }: TableItemProps) {
     const [tableName, setTableName] = useState(table.name);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -27,10 +29,13 @@ export function TableItem({ table, selectedTable, setSelectedTable }: TableItemP
             setIsOpen(open);
         }}>
         <DropdownMenuTrigger asChild>
-            <div className={`${table.id === selectedTable ? 'bg-white px-6' : 'px-3 text-white'}  h-9 flex items-center justify-center text-sm select-none`}
+            <div className={`${table.id === selectedTable ? 'bg-white px-6' : 'px-3 text-white'}  h-9 flex items-center justify-center text-xs select-none`}
                 style={{ borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}
                 onClick={() => {
-                    if (table.id !== selectedTable) setSelectedTable(table.id)
+                    if (table.id !== selectedTable) {
+                        setSelectedTable(table.id)
+                        setViewId(views?.[0]!.id)
+                    }    
                 }}
             >
                 {table.name}

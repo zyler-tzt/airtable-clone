@@ -36,12 +36,38 @@ export const baseRouter = createTRPCRouter({
                   create: [
                     {}, {}, {},
                   ]
+                },
+                view: {
+                  create: {
+                    name: "Default View"
+                  }
                 }
               }
             ]
-          }
+          },
+        },
+        include: {
+          tables: {
+            include: {
+              fields: true,
+              view: true,
+            },
+          },
         },
       });
+
+
+      const table = base.tables[0];
+      const viewId = table?.view[0]?.id;
+
+      if (table?.fields?.length && viewId) {
+        await ctx.db.viewField.createMany({
+          data: table.fields.map((field) => ({
+            viewId,
+            fieldId: field.id,
+          })),
+        });
+      }
 
       return base;
     }),

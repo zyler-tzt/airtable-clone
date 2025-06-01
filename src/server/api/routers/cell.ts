@@ -11,7 +11,6 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
-import next from "next";
 
 export const cellRouter = createTRPCRouter({
   updateCell: protectedProcedure
@@ -114,28 +113,116 @@ export const cellRouter = createTRPCRouter({
   .input(
     z.object({
       tableId: z.number(),
-      cursor: z.number().nullish(),
+      viewId: z.number(),
+      cursor: z.number().default(0),
       limit: z.number().optional().default(1000),
     })
   )
   .query(async ({ ctx, input }) => {
-    const rows = await ctx.db.row.findMany({
-      where: {
-        tableId: input.tableId,
-        id: input.cursor ? { gte: input.cursor } : undefined,
-      },
-      take: input.limit + 1,
+    const sortings = await ctx.db.sorting.findMany({
+      where: { viewId: input.viewId },
       orderBy: { id: "asc" },
       include: {
-          cells: true,
-        },
+        field: { select: { type: true } },
+      },
     });
-    const nextCursor = rows.length > input.limit ? rows.pop()!.id : null;
+
+    const sortingSQL = sortings.map((sort, index) => {
+      const cellAlias = `cell_${index}`;
+      return {
+        join: `LEFT JOIN "Cell" AS ${cellAlias} ON "Row".id = ${cellAlias}."rowId" AND ${cellAlias}."fieldId" = ${sort.fieldId}`,
+        orderBy: sort.field.type === "number" 
+          ? `CAST(${cellAlias}.value AS NUMERIC) ${sort.order.toUpperCase()}`
+          : `${cellAlias}.value ${sort.order.toUpperCase()}`
+      };
+    });
+
+    const joins = sortingSQL.map(sort => sort.join).join(' ');
+    const orderBy = sortingSQL.map(sort => sort.orderBy).join(', ');
+    const finalOrderBy = orderBy ? `${orderBy}, "Row".id ASC` : '"Row".id ASC';
+
+    const finalQuery = `
+      SELECT "Row".id
+      FROM "Row"
+      ${joins}
+      WHERE "Row"."tableId" = ${input.tableId}
+      ORDER BY ${finalOrderBy}
+      LIMIT ${input.limit + 1}
+      OFFSET ${input.cursor}
+    `;
+
+    const sortedRowIds = await ctx.db.$queryRawUnsafe<Array<{ id: number }>>(finalQuery);
+
+    const hasNextPage = sortedRowIds.length > input.limit;
+    const rowsToRet = hasNextPage ? sortedRowIds.slice(0, -1) : sortedRowIds;
+    const nextCursor = hasNextPage ? input.cursor + input.limit : null;
+
+    const rows = await ctx.db.row.findMany({
+      where: {
+        id: { in: rowsToRet.map(row => row.id) },
+      },
+      include: {
+        cells: true,
+      },
+    });
+
+    const sortedRows = rowsToRet.map(sortedRow => 
+      rows.find(row => row.id === sortedRow.id)!
+    );
 
     return {
-      rows,
+      rows: sortedRows,
       nextCursor,
     };
+
+    // const rows = await ctx.db.row.findMany({
+    //   where: {
+    //     tableId: input.tableId,
+    //     id: input.cursor ? { gte: input.cursor } : undefined,
+    //   },
+    //   take: input.limit + 1,
+    //   orderBy: { id: "asc" },
+    //   include: {
+    //       cells: true,
+    //     },
+    // });
+    // const nextCursor = rows.length > input.limit ? rows.pop()!.id : null;
+
+    // const sortedRows = rows.sort((a, b) => {
+    //   for (const sort of sortings) {
+    //     const { fieldId, order, field } = sort;
+    //     const type = field.type;
+
+    //     const aCell = a.cells.find((cell) => cell.fieldId === fieldId);
+    //     const bCell = b.cells.find((cell) => cell.fieldId === fieldId);
+
+    //     const aValRaw = aCell?.value ?? "";
+    //     const bValRaw = bCell?.value ?? "";
+
+    //     let valA: string | number = aValRaw;
+    //     let valB: string | number = bValRaw;
+
+    //     if (type === "number") {
+    //       valA = parseFloat(aValRaw);
+    //       valB = parseFloat(bValRaw);
+    //       if (valA < valB) return order === "asc" ? -1 : 1;
+    //       if (valA > valB) return order === "asc" ? 1 : -1;
+    //     } else {
+    //       valA = aValRaw.toLowerCase();
+    //       valB = bValRaw.toLowerCase();
+    //       if (valA.localeCompare(valB)) return order === "asc" ? -1 : 1;
+    //       if (valB.localeCompare(valA)) return order === "asc" ? 1 : -1;
+    //     }
+
+        
+    //   }
+    //   return 0;
+    // });
+
+    // return {
+    //   rows: sortedRows,
+    //   nextCursor,
+    // };
   }),
 
 });

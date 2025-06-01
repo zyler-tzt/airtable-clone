@@ -1,19 +1,21 @@
 "use client"
 
-import type { Table } from "@prisma/client"
+import type { Table, Field } from "@prisma/client"
 import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender, type ColumnDef } from "@tanstack/react-table"
 import type { CellContext } from "@tanstack/react-table"
 
 import { api } from "~/trpc/react"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { useEffect, useRef, useMemo } from "react"
-import { TableCell } from "./tableCell"
-import { AddFieldButton } from "./addFieldButton"
-import { AddRowButton } from "./addRowButton"
-import { Button } from "../ui/button"
+import { TableCell } from "~/app/_components/basePage/tableDisplay/tableCell"
+import { AddFieldButton } from "~/app/_components/basePage/tableDisplay/addFieldButton"
+import { AddRowButton } from "~/app/_components/basePage/tableDisplay/addRowButton"
+import { Button } from "../../ui/button"
 
 type TableDataItemProps = {
-  tableData: Table
+  tableData: Table,
+  viewId: number,
+  columns: Field[]
 }
 
 export type RowData = {
@@ -50,9 +52,7 @@ function classParser(meta?: CustomColumnMeta) {
   }
 }
 
-export function TableDisplay({ tableData }: TableDataItemProps) {
-  const { data: columns } = api.table.getFields.useQuery({ tableId: tableData.id })
-
+export function TableDisplay({ columns, tableData, viewId }: TableDataItemProps) {
   const {
     data: infiniteRowsData,
     fetchNextPage,
@@ -60,7 +60,7 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
     isFetchingNextPage,
     isLoading,
   } = api.cell.infiniteRows.useInfiniteQuery(
-    { tableId: tableData.id },
+    { tableId: tableData.id , viewId},
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -81,11 +81,11 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
     {
       id: "rowNums",
       header: "",
-      cell: (info) => info.row.index + 1,
+      cell: (info) => <div className="text-xs">{info.row.index + 1}</div>,
       meta: { type: "id" },
       size: 60,
     },
-    ...(columns?.map((field) => ({
+    ...(columns?.slice().sort((a, b) => a.id - b.id).map((field) => ({
       id: String(field.id),
       accessorFn: (row: ExtendedRowData) => {
         if (row.id === -1) return ""
@@ -96,7 +96,7 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
       },
       meta: { type: field.type },
       cell: (value: CellContext<ExtendedRowData, unknown>) => {
-        return <TableCell value={value} />
+        return <TableCell value={value} tableId={tableData.id}/>
       },
     })) ?? []),
     {
@@ -121,7 +121,7 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
   const rowVirtualizer = useVirtualizer({
     count: table.getRowModel().rows.length,
     getScrollElement: () => tableParentRef.current,
-    estimateSize: () => 40,
+    estimateSize: () => 30,
     overscan: 10,
   })
 
@@ -156,18 +156,18 @@ export function TableDisplay({ tableData }: TableDataItemProps) {
   }
 
   if (isLoading || !columns) {
-    return <div className="text-xl text-gray-500">Please wait while we fetch your base :D</div>
+    return <div className="text-sm text-gray-500 p-5">Please wait while we fetch your view :D</div>
   }
 
   return (
-    <div>
+    <div className="text-xs">
       <div className="sticky top-0 bg-gray-50 border border-gray-200">
         {table.getHeaderGroups().map((headerGroup) => (
           <div key={headerGroup.id} className="flex">
             {headerGroup.headers.map((header) => (
               <div
                 key={header.id}
-                className={`py-2 border-r border-gray-200 last:border-r-0 bg-gray-50 flex-shrink-0`}
+                className={`py-2 h-7 flex items-center justify-center text-xs border-r border-gray-200 last:border-r-0 bg-gray-50 flex-shrink-0`}
                 style={{ width: header.getSize() }}
               >
                 {flexRender(header.column.columnDef.header, header.getContext())}

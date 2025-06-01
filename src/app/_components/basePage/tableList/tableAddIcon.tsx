@@ -19,19 +19,23 @@ import { Label } from "~/app/_components/ui/label"
 
 type TableAddButtonProps = {
     baseId: number,
-    setSelectedTable: (id: number) => void
+    setSelectedTable: (id: number) => void,
+    setViewId: (id: number) => void
 }
 
-export function TableAddButton({ baseId, setSelectedTable} : TableAddButtonProps) {
+export function TableAddButton({ baseId, setSelectedTable, setViewId} : TableAddButtonProps) {
     const [open, setOpen] = useState(false)
     const [newTableName, setNewTableName] = useState("")
     const utils = api.useUtils();
 
     const createTable = api.table.create.useMutation({
         onSuccess: async (newTable) => {
-            await utils.base.invalidate();
             setOpen(false)
-            setSelectedTable(newTable.id);
+            setSelectedTable(newTable!.id);
+            setViewId(newTable!.view?.[0]!.id)
+            console.log(newTable?.view?.[0]?.id)
+            await utils.base.invalidate();
+            await utils.table.invalidate();
         },
     });
 

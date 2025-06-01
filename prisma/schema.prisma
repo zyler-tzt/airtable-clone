@@ -23,7 +23,7 @@ model View {
 
   sortings  Sorting[]
   filters   Filter[]
-  fields    ViewField[]
+  viewFields    ViewField[]
 }
 
 model Sorting {
