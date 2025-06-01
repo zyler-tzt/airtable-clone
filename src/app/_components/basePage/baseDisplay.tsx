@@ -23,7 +23,7 @@ export function BaseDisplay() {
             setSelectedTableId(base?.tables?.[0]?.id)
     }, [base])
 
-    const { data: table } = api.table.getTableByTableId.useQuery({ tableId: selectedTableId ?? -1}) ;
+    const { data: table, isLoading: isTableLoading } = api.table.getTableByTableId.useQuery({ tableId: selectedTableId ?? -1}) ;
     useEffect(() => {
         if (currentViewId === undefined)
             setViewId(table?.view?.[0]?.id)
@@ -38,7 +38,7 @@ export function BaseDisplay() {
     }, [columns])
 
 
-    if (isBaseLoading || !selectedTableId) {
+    if (isBaseLoading || !selectedTableId || isTableLoading ) {
         return <div>
             <EmptyBaseHeader />
             <EmptyBaseTableList />
