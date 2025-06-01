@@ -1,18 +1,16 @@
 import { z } from "zod";
 import { nanoid } from "nanoid";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const tableRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(z.object(
-      {
+    .input(
+      z.object({
         name: z.string().min(1),
         baseId: z.number(),
-      }),)
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const table = await ctx.db.table.create({
         data: {
@@ -23,7 +21,7 @@ export const tableRouter = createTRPCRouter({
             create: [
               {
                 name: "Field 1",
-                type: "text", 
+                type: "text",
               },
               {
                 name: "Field 2",
@@ -32,22 +30,20 @@ export const tableRouter = createTRPCRouter({
             ],
           },
           rows: {
-            create: [
-              {}, {}, {},
-            ]
+            create: [{}, {}, {}],
           },
         },
         include: {
           fields: true,
           view: true,
-        }
+        },
       });
       const view = await ctx.db.view.create({
-          data: {
-            name: "Default View",
-            tableId: table.id,
-          },
-        });
+        data: {
+          name: "Default View",
+          tableId: table.id,
+        },
+      });
       await ctx.db.viewField.createMany({
         data: table.fields.map((field) => ({
           viewId: view.id,
@@ -56,12 +52,12 @@ export const tableRouter = createTRPCRouter({
       });
 
       return await ctx.db.table.findUnique({
-          where: { id: table.id },
-          include: {
-            fields: true,
-            view: true,
-            },
-        });
+        where: { id: table.id },
+        include: {
+          fields: true,
+          view: true,
+        },
+      });
     }),
 
   getTables: protectedProcedure
@@ -77,44 +73,48 @@ export const tableRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.table.findUnique({
         where: { id: input.tableId },
-        include: { view: true}
+        include: { view: true },
       });
     }),
 
   getFields: protectedProcedure
-  .input(z.object({ 
-    tableId: z.number(),
-    viewId: z.number(),
-  }))
-  .query(async ({ ctx, input }) => {
-    const fields = await ctx.db.field.findMany({
-      where: {
-        tableId: input.tableId,
-        viewFields: {
-          some: {
-            viewId: input.viewId,
+    .input(
+      z.object({
+        tableId: z.number(),
+        viewId: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const fields = await ctx.db.field.findMany({
+        where: {
+          tableId: input.tableId,
+          viewFields: {
+            some: {
+              viewId: input.viewId,
+            },
           },
         },
-      },
-    });
+      });
 
-    return fields
-  }),
+      return fields;
+    }),
 
   getAllFields: protectedProcedure
-  .input(z.object({ 
-    tableId: z.number(),
-  }))
-  .query(async ({ ctx, input }) => {
-    return await ctx.db.field.findMany({
-      where: {
+    .input(
+      z.object({
+        tableId: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.field.findMany({
+        where: {
           tableId: input.tableId,
-      },
-      include: {
-        viewFields: true
-      }
-    });
-  }),
+        },
+        include: {
+          viewFields: true,
+        },
+      });
+    }),
 
   deleteTable: protectedProcedure
     .input(z.object({ tableId: z.number() }))
@@ -125,32 +125,40 @@ export const tableRouter = createTRPCRouter({
     }),
 
   createField: protectedProcedure
-    .input(z.object({ tableId: z.number(), fieldName: z.string().min(1), fieldType: z.string() }))
+    .input(
+      z.object({
+        tableId: z.number(),
+        fieldName: z.string().min(1),
+        fieldType: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const field = await ctx.db.field.create({
         data: {
           name: input.fieldName,
           type: input.fieldType,
           table: { connect: { id: input.tableId } },
-        }
+        },
       });
 
       const views = await ctx.db.view.findMany({
-        where: { tableId: input.tableId }
+        where: { tableId: input.tableId },
       });
 
-      console.log(views)
+      console.log(views);
 
-      await Promise.all(views.map(view =>
-        ctx.db.viewField.create({
-          data: {
-            fieldId: field.id,
-            viewId: view.id,
-          }
-        })
-      ))
+      await Promise.all(
+        views.map((view) =>
+          ctx.db.viewField.create({
+            data: {
+              fieldId: field.id,
+              viewId: view.id,
+            },
+          }),
+        ),
+      );
 
-      return field
+      return field;
     }),
 
   createRow: protectedProcedure
@@ -159,7 +167,7 @@ export const tableRouter = createTRPCRouter({
       return ctx.db.row.create({
         data: {
           table: { connect: { id: input.tableId } },
-        }
+        },
       });
     }),
 });

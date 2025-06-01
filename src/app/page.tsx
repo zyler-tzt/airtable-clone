@@ -5,9 +5,5 @@ import { HomePage } from "~/app/_pages/homePage";
 export default async function Home() {
   const session = await auth();
 
-  return (
-    <div>
-      {session? <HomePage/> : <SignInPage/>}
-    </div>
-  );
+  return <div>{session ? <HomePage /> : <SignInPage />}</div>;
 }

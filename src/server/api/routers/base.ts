@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { nanoid } from "nanoid";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const baseRouter = createTRPCRouter({
   create: protectedProcedure
@@ -24,7 +21,7 @@ export const baseRouter = createTRPCRouter({
                   create: [
                     {
                       name: "Field 1",
-                      type: "text", 
+                      type: "text",
                     },
                     {
                       name: "Field 2",
@@ -33,17 +30,15 @@ export const baseRouter = createTRPCRouter({
                   ],
                 },
                 rows: {
-                  create: [
-                    {}, {}, {},
-                  ]
+                  create: [{}, {}, {}],
                 },
                 view: {
                   create: {
-                    name: "Default View"
-                  }
-                }
-              }
-            ]
+                    name: "Default View",
+                  },
+                },
+              },
+            ],
           },
         },
         include: {
@@ -55,7 +50,6 @@ export const baseRouter = createTRPCRouter({
           },
         },
       });
-
 
       const table = base.tables[0];
       const viewId = table?.view[0]?.id;
@@ -75,13 +69,13 @@ export const baseRouter = createTRPCRouter({
   getBases: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
-    const bases = await ctx.db.base.findMany({
-      orderBy: { createdAt: "desc" },
-      where: { createdById: input.userId }
-    });
+      const bases = await ctx.db.base.findMany({
+        orderBy: { createdAt: "desc" },
+        where: { createdById: input.userId },
+      });
 
-    return bases
-  }),
+      return bases;
+    }),
 
   deleteBase: protectedProcedure
     .input(z.object({ baseId: z.number() }))
@@ -90,18 +84,18 @@ export const baseRouter = createTRPCRouter({
         where: { id: input.baseId },
       });
     }),
-  
+
   getBaseBySlug: protectedProcedure
     .input(z.object({ slug: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       const base = await ctx.db.base.findUnique({
         where: { slug: input.slug },
         include: {
-          tables: true
-        }
+          tables: true,
+        },
       });
-    return base;
-  }),
+      return base;
+    }),
 
   getFirstTableByBaseId: protectedProcedure
     .input(z.object({ baseId: z.number() }))
@@ -110,8 +104,6 @@ export const baseRouter = createTRPCRouter({
         where: { baseId: input.baseId },
       });
 
-      return table
+      return table;
     }),
-
 });
-

@@ -14,7 +14,7 @@ export const appRouter = createTRPCRouter({
   base: baseRouter,
   table: tableRouter,
   cell: cellRouter,
-  view: viewRouter
+  view: viewRouter,
 });
 
 // export type definition of API
