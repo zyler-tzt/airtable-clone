@@ -30,6 +30,9 @@ export function CreateNewSort({
   const utils = api.useUtils();
 
   const createSort = api.view.createSort.useMutation({
+    onMutate: async () => {
+      await utils.view.getSorts.cancel();
+    },
     onSuccess: async () => {
       await utils.view.getSorts.invalidate();
       await utils.cell.infiniteRows.invalidate();

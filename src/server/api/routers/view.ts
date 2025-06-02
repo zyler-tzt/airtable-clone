@@ -83,6 +83,24 @@ export const viewRouter = createTRPCRouter({
       });
     }),
 
+  modifySort: protectedProcedure
+  .input(
+    z.object({
+      sorterId: z.number(),
+      newOrder: z.string(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    await ctx.db.sorting.update({
+      where: {
+        id: input.sorterId,
+      },
+      data: {
+        order: input.newOrder,
+      },
+    });
+  }),
+
   createFilter: protectedProcedure
     .input(
       z.object({
@@ -102,6 +120,60 @@ export const viewRouter = createTRPCRouter({
         },
       });
     }),
+
+  getFilters: protectedProcedure
+  .input(
+    z.object({
+      viewId: z.number(),
+    }),
+  )
+  .query(async ({ ctx, input }) => {
+    return await ctx.db.filter.findMany({
+      where: {
+        viewId: input.viewId,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+  }),
+
+  modifyValueFilter: protectedProcedure
+  .input(
+    z.object({
+      filterId: z.number(),
+      newValue: z.string(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    await ctx.db.filter.update({
+      where: {
+        id: input.filterId,
+      },
+      data: {
+        value: input.newValue,
+      },
+    });
+  }),
+
+  modifyOperatorFilter: protectedProcedure
+  .input(
+    z.object({
+      filterId: z.number(),
+      newValue: z.string(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    await ctx.db.filter.update({
+      where: {
+        id: input.filterId,
+      },
+      data: {
+        operator: input.newValue,
+      },
+    });
+  }),
+
 
   deleteFilter: protectedProcedure
     .input(

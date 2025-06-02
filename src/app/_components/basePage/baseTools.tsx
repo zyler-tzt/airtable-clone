@@ -2,6 +2,7 @@ import Image from "next/image";
 import { HideShowButton } from "./showHide/hideShowButton";
 import type { Field } from "@prisma/client";
 import { SorterButton } from "./sorter/SorterButton";
+import { FilterButton } from "./filter/filterButton";
 
 type BaseToolsProps = {
   openView: boolean;
@@ -43,16 +44,11 @@ export function BaseTools({
         viewId={viewId}
       />
 
-      <div className="my-1 flex flex-row items-center justify-center gap-1 rounded-sm px-2 hover:bg-gray-200">
-        <Image
-          src="/filter.svg"
-          alt="filterIcon"
-          width={15}
-          height={15}
-          draggable={false}
-        />
-        Filter
-      </div>
+      <FilterButton
+        tableColumns={tableColumns}
+        tableId={tableId}
+        viewId={viewId}
+      />
 
       <SorterButton
         tableColumns={tableColumns}

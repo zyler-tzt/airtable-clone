@@ -26,6 +26,9 @@ export function SortedItem({ field, sortMap, setSortMap }: SortedItemProps) {
   const utils = api.useUtils();
 
   const deleteSort = api.view.deleteSort.useMutation({
+    onMutate: async () => {
+      await utils.view.getSorts.cancel();
+    },
     onSuccess: async () => {
       await utils.view.getSorts.invalidate();
       await utils.cell.infiniteRows.invalidate();
@@ -40,6 +43,21 @@ export function SortedItem({ field, sortMap, setSortMap }: SortedItemProps) {
       await deleteSort.mutateAsync({ sorterId: sort.id });
     }
   }
+
+  const modifySorter = api.view.modifySort.useMutation({
+    onMutate: async () => {
+      await utils.view.getSorts.cancel();
+    },
+    onSuccess: async () => {
+      await utils.view.getSorts.invalidate();
+      await utils.cell.infiniteRows.invalidate();
+    },
+  });
+
+  async function modifySorterHandler(sorterId: number, newOrder: string) {
+    await modifySorter.mutateAsync({ sorterId, newOrder });
+  }
+
   return (
     <div className="mb-2 flex flex-row items-center justify-around text-xs">
       <div className="w-[20%]">{field.name}</div>
@@ -48,13 +66,14 @@ export function SortedItem({ field, sortMap, setSortMap }: SortedItemProps) {
           value={sortMap
             .find((s) => s.fieldId === field.id)
             ?.order.toUpperCase()}
-          onValueChange={(newValue) => {
+          onValueChange={async (newValue) => {
             const newMap = sortMap.slice();
             const sortChange = newMap.find((s) => s.fieldId === field.id);
             if (sortChange) {
               sortChange.order = newValue as "asc" | "desc";
+              setSortMap(newMap);
+              await modifySorterHandler(sortChange.id, newValue);
             }
-            setSortMap(newMap);
           }}
         >
           <SelectTrigger className="w-full text-xs">

@@ -10,78 +10,77 @@ import {
   DropdownMenuTrigger,
 } from "~/app/_components/ui/dropdown-menu";
 import { api } from "~/trpc/react";
-import { CreateNewSort } from "./CreateNewSort";
-import { SortedItem } from "./SortedItem";
+import { CreateNewFilter } from "./createNewFilter";
+import { FilterItem } from "./filterItem";
 
-type SorterButtonProps = {
+type FiltererButtonProps = {
   tableId: number;
   viewId: number;
   tableColumns: Field[];
 };
 
-type sortByObject = {
+type filterByObject = {
   id: number;
   fieldId: number;
-  order: "asc" | "desc";
+  operator: string;
+  value: string;
 };
 
-export function SorterButton({
-  tableId,
-  viewId,
-  tableColumns,
-}: SorterButtonProps) {
+export function FilterButton({ tableId, viewId }: FiltererButtonProps) {
   const { data: fields } = api.table.getAllFields.useQuery({ tableId });
-  const { data: sorts } = api.view.getSorts.useQuery({ viewId });
-  const [sortMap, setSortMap] = useState<sortByObject[]>([]);
+  const { data: filters } = api.view.getFilters.useQuery({ viewId });
+  const [filterMap, setFilterMap] = useState<filterByObject[]>([]);
 
   useEffect(() => {
-    if (sorts) {
-      setSortMap(
-        sorts.map((s) => ({
+    if (filters) {
+      setFilterMap(
+        filters.map((s) => ({
           id: s.id,
           fieldId: s.fieldId,
-          order: s.order as "asc" | "desc",
+          operator: s.operator,
+          value: s.value,
         })),
       );
     }
-  }, [sorts]);
+  }, [filters]);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="my-1 flex flex-row items-center justify-center gap-1 rounded-sm px-2 text-xs select-none hover:bg-gray-200">
           <Image
-            src="/sort.svg"
-            alt="sortIcon"
+            src="/filter.svg"
+            alt="filterIcon"
             width={15}
             height={15}
             draggable={false}
           />
-          Sort
+          Filter
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuLabel className="text-xs">Sort by</DropdownMenuLabel>
+      <DropdownMenuContent className="w-100" align="start">
+        <DropdownMenuLabel className="text-xs">Filter by</DropdownMenuLabel>
         <DropdownMenuGroup>
-          {sortMap.map((sortItem) => {
-            const field = fields?.find((f) => f.id === sortItem.fieldId);
+          {filterMap.map((filterItem) => {
+            const field = fields?.find((f) => f.id === filterItem.fieldId);
             if (!field) return null;
             return (
-              <SortedItem
-                key={`sort-item-${field.id}`}
+              <FilterItem
+                key={`Filter-item-${filterItem.id}`}
+                filterId={filterItem.id}
                 field={field}
-                sortMap={sortMap}
-                setSortMap={setSortMap}
+                filterMap={filterMap}
+                setFilterMap={setFilterMap}
               />
             );
           })}
         </DropdownMenuGroup>
         <DropdownMenuGroup>
-          <CreateNewSort
+          <CreateNewFilter
             viewId={viewId}
             fields={fields}
-            sortMap={sortMap}
-            setSortMap={setSortMap}
+            filterMap={filterMap}
+            setFilterMap={setFilterMap}
           />
         </DropdownMenuGroup>
       </DropdownMenuContent>

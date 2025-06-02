@@ -130,6 +130,13 @@ export const cellRouter = createTRPCRouter({
         },
       });
 
+      const filters = await ctx.db.filter.findMany({
+        where: { viewId: input.viewId },
+        include: {
+          field: true,
+        },
+      });
+
       const sortingSQL = sortings.map((sort, index) => {
         const cellAlias = `cell_${index}`;
         return {
@@ -177,57 +184,37 @@ export const cellRouter = createTRPCRouter({
         (sortedRow) => rows.find((row) => row.id === sortedRow.id)!,
       );
 
+      const filteredRows = sortedRows.filter((row) => {
+        return filters.every((filter) => {
+          const cell = row.cells.find((c) => c.fieldId === filter.fieldId);
+          let value
+          if (cell) {
+            value = cell.value;
+          }
+          const target = filter.value
+          console.log(`T${filter.operator}T`)
+          switch (filter.operator) {
+            case "is_empty":
+              return value === undefined || value === null || value === "";
+            case "is_not_empty":
+              return value !== undefined && value !== null && value !== "";
+            case "is":
+              return String(value) === String(target) || (value === undefined && target === "")
+            case "is_not":
+              return String(value) !== String(target)
+            case "contains":
+              return String(value).toLowerCase().includes(String(target));
+            case "does_not_contain":
+              return !String(value).toLowerCase().includes(String(target));
+            default:
+              return false;
+          }
+        });
+      });
+
       return {
-        rows: sortedRows,
+        rows: filteredRows,
         nextCursor,
       };
-
-      // const rows = await ctx.db.row.findMany({
-      //   where: {
-      //     tableId: input.tableId,
-      //     id: input.cursor ? { gte: input.cursor } : undefined,
-      //   },
-      //   take: input.limit + 1,
-      //   orderBy: { id: "asc" },
-      //   include: {
-      //       cells: true,
-      //     },
-      // });
-      // const nextCursor = rows.length > input.limit ? rows.pop()!.id : null;
-
-      // const sortedRows = rows.sort((a, b) => {
-      //   for (const sort of sortings) {
-      //     const { fieldId, order, field } = sort;
-      //     const type = field.type;
-
-      //     const aCell = a.cells.find((cell) => cell.fieldId === fieldId);
-      //     const bCell = b.cells.find((cell) => cell.fieldId === fieldId);
-
-      //     const aValRaw = aCell?.value ?? "";
-      //     const bValRaw = bCell?.value ?? "";
-
-      //     let valA: string | number = aValRaw;
-      //     let valB: string | number = bValRaw;
-
-      //     if (type === "number") {
-      //       valA = parseFloat(aValRaw);
-      //       valB = parseFloat(bValRaw);
-      //       if (valA < valB) return order === "asc" ? -1 : 1;
-      //       if (valA > valB) return order === "asc" ? 1 : -1;
-      //     } else {
-      //       valA = aValRaw.toLowerCase();
-      //       valB = bValRaw.toLowerCase();
-      //       if (valA.localeCompare(valB)) return order === "asc" ? -1 : 1;
-      //       if (valB.localeCompare(valA)) return order === "asc" ? 1 : -1;
-      //     }
-
-      //   }
-      //   return 0;
-      // });
-
-      // return {
-      //   rows: sortedRows,
-      //   nextCursor,
-      // };
     }),
 });
