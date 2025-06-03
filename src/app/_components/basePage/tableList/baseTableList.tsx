@@ -34,6 +34,7 @@ export function BaseTableList({
                 key={table.id}
                 setViewId={setViewId}
                 table={table}
+                allTables={base.tables}
                 setSelectedTable={setSelectedTable}
                 selectedTable={selectedTable}
               />

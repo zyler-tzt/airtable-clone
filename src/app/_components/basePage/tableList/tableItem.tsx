@@ -7,11 +7,13 @@ import {
 
 import { Button } from "~/app/_components/ui/button";
 import { Input } from "~/app/_components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Table, View } from "@prisma/client";
+import { api } from "~/trpc/react";
 
 type TableItemProps = {
   table: Table;
+  allTables: Table[];
   selectedTable: number | undefined | null;
   setSelectedTable: (id: number) => void;
   setViewId: (id: number) => void;
@@ -20,6 +22,7 @@ type TableItemProps = {
 
 export function TableItem({
   table,
+  allTables,
   selectedTable,
   setSelectedTable,
   setViewId,
@@ -27,6 +30,35 @@ export function TableItem({
 }: TableItemProps) {
   const [tableName, setTableName] = useState(table.name);
   const [isOpen, setIsOpen] = useState(false);
+
+  const utils = api.useUtils();
+
+  const deleteTable = api.table.deleteTable.useMutation({
+    onSuccess: async () => {
+      await utils.base.invalidate();
+      setSelectedTable(allTables?.[0]?.id ?? -1);
+    },
+  });
+
+  const updateTable = api.table.updateTable.useMutation({
+    onSuccess: async () => {
+      await utils.base.invalidate();
+    },
+  });
+
+  useEffect(() => {
+    if (selectedTable === table.id) {
+      setViewId(views?.[0]!.id);
+    }
+  }, [selectedTable]);
+
+  async function deleteTableHandler() {
+    await deleteTable.mutateAsync({ tableId: table.id });
+  }
+
+  async function updateTableHandler() {
+    await updateTable.mutateAsync({ tableId: table.id, name: tableName });
+  }
 
   return (
     <DropdownMenu
@@ -44,7 +76,6 @@ export function TableItem({
           onClick={() => {
             if (table.id !== selectedTable) {
               setSelectedTable(table.id);
-              setViewId(views?.[0]!.id);
             }
           }}
         >
@@ -61,18 +92,21 @@ export function TableItem({
           />
           <div className="flex flex-row items-center justify-between">
             <Button
-              onClick={() => {
+              onClick={async () => {
                 setIsOpen(false);
+                await deleteTableHandler();
               }}
-              className="w-15"
+              className={`w-15 select-none`}
+              disabled={allTables.length === 1}
             >
               Delete
             </Button>
             <Button
-              onClick={() => {
+              onClick={async () => {
                 setIsOpen(false);
+                await updateTableHandler();
               }}
-              className="w-15"
+              className="w-15 select-none"
             >
               Save
             </Button>

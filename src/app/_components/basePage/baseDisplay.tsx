@@ -23,6 +23,8 @@ export function BaseDisplay() {
   const [tableColumns, setTableColumns] = useState<Field[] | undefined>(
     undefined,
   );
+  const [searchInput, setSearchInput] = useState("");
+
   const { data: base, isLoading: isBaseLoading } =
     api.base.getBaseBySlug.useQuery({ slug: slug as string });
 
@@ -88,6 +90,7 @@ export function BaseDisplay() {
         openViewSetter={setOpenViewList}
         tableId={selectedTableId}
         viewId={currentViewId}
+        setSearchInput={setSearchInput}
       />
       <div className="flex flex-row">
         <div className={`w-[15vw] ${openViewList === false ? "hidden" : ""}`}>
@@ -104,6 +107,7 @@ export function BaseDisplay() {
               columns={tableColumns!}
               tableData={table}
               viewId={currentViewId}
+              searchInput={searchInput}
             />
           ) : (
             <div></div>

@@ -22,6 +22,7 @@ type TableDataItemProps = {
   tableData: Table;
   viewId: number;
   columns: Field[];
+  searchInput: string;
 };
 
 export type RowData = {
@@ -62,6 +63,7 @@ export function TableDisplay({
   columns,
   tableData,
   viewId,
+  searchInput,
 }: TableDataItemProps) {
   const {
     data: infiniteRowsData,
@@ -70,7 +72,7 @@ export function TableDisplay({
     isFetchingNextPage,
     isLoading,
   } = api.cell.infiniteRows.useInfiniteQuery(
-    { tableId: tableData.id, viewId },
+    { tableId: tableData.id, viewId, searchInput },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -109,7 +111,9 @@ export function TableDisplay({
         },
         meta: { type: field.type },
         cell: (value: CellContext<ExtendedRowData, unknown>) => {
-          return <TableCell value={value} tableId={tableData.id} />;
+          return (
+            <TableCell type={field.type} value={value} tableId={tableData.id} />
+          );
         },
       })) ?? []),
     {

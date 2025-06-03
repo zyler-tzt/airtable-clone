@@ -3,6 +3,7 @@ import { HideShowButton } from "./showHide/hideShowButton";
 import type { Field } from "@prisma/client";
 import { SorterButton } from "./sorter/SorterButton";
 import { FilterButton } from "./filter/filterButton";
+import { SearchBox } from "./search/searchBox";
 
 type BaseToolsProps = {
   openView: boolean;
@@ -11,6 +12,7 @@ type BaseToolsProps = {
   viewId: number;
   setTableColumns: (newFields: Field[]) => void;
   tableColumns: Field[];
+  setSearchInput: (search: string) => void;
 };
 
 export function BaseTools({
@@ -20,9 +22,10 @@ export function BaseTools({
   viewId,
   setTableColumns,
   tableColumns,
+  setSearchInput,
 }: BaseToolsProps) {
   return (
-    <div className="my-1 flex h-[5vh] flex-row justify-start gap-5 px-2 pl-3 text-xs shadow-sm">
+    <div className="mb-1 flex h-[5vh] flex-row justify-start gap-5 px-2 py-1 pl-3 text-xs shadow-sm">
       <div
         className="my-1 flex flex-row items-center justify-center gap-1 rounded-sm px-2 select-none hover:bg-gray-200"
         onClick={() => openViewSetter(!openView)}
@@ -55,6 +58,8 @@ export function BaseTools({
         tableId={tableId}
         viewId={viewId}
       />
+
+      <SearchBox setSearchInput={setSearchInput}></SearchBox>
     </div>
   );
 }

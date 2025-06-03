@@ -65,6 +65,9 @@ export const tableRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.table.findMany({
         where: { baseId: input.baseId },
+        orderBy: {
+          id: 'asc'
+        }
       });
     }),
 
@@ -123,6 +126,23 @@ export const tableRouter = createTRPCRouter({
         where: { id: input.tableId },
       });
     }),
+
+  updateTable: protectedProcedure
+  .input(
+    z.object({
+      tableId: z.number(),
+      name: z.string().min(1),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    return ctx.db.table.update({
+      where: { id: input.tableId },
+      data: {
+        name: input.name,
+      },
+    });
+  }),
+
 
   createField: protectedProcedure
     .input(

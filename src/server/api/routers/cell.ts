@@ -117,6 +117,7 @@ export const cellRouter = createTRPCRouter({
       z.object({
         tableId: z.number(),
         viewId: z.number(),
+        searchInput: z.string(),
         cursor: z.number().default(0),
         limit: z.number().optional().default(1000),
       }),
@@ -201,16 +202,22 @@ export const cellRouter = createTRPCRouter({
             case "is":
               return String(value) === String(target) || (value === undefined && target === "")
             case "is_not":
-              return String(value) !== String(target)
+              return String(value) !== String(target) && ((value === undefined && target !== "") || (value !== undefined && target === ""))
             case "contains":
-              return String(value).toLowerCase().includes(String(target));
+              return String(value).toLowerCase().includes(String(target).toLowerCase());
             case "does_not_contain":
-              return !String(value).toLowerCase().includes(String(target));
+              return !String(value).toLowerCase().includes(String(target).toLowerCase());
             default:
               return false;
           }
         });
       });
+      console.log(input.searchInput)
+      // const searchedRows = filteredRows.filter((row) =>
+      //   row.cells.some((cell) =>
+      //     String(cell.value).includes(input.searchInput)
+      //   )
+      // );
 
       return {
         rows: filteredRows,

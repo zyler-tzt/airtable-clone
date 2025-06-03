@@ -91,7 +91,11 @@ export const baseRouter = createTRPCRouter({
       const base = await ctx.db.base.findUnique({
         where: { slug: input.slug },
         include: {
-          tables: true,
+          tables: {
+            orderBy: {
+              id: 'asc'
+            },
+          }
         },
       });
       return base;

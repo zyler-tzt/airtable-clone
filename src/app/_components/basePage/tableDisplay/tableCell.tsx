@@ -7,8 +7,9 @@ import { api } from "~/trpc/react";
 interface TableCellProps {
   value: CellContext<RowData, unknown>;
   tableId: number;
+  type: string;
 }
-export function TableCell({ value }: TableCellProps) {
+export function TableCell({ value, type }: TableCellProps) {
   const rowId = value.row.original.id;
   const fieldId = parseInt(value.column.id);
   const rowIndex = value.row.index;
@@ -66,9 +67,15 @@ export function TableCell({ value }: TableCellProps) {
       id={`${rowId}-${fieldId}`}
       value={parseValue(cellValue)}
       readOnly={!isEditing}
-      onChange={(e: { target: { value: unknown } }) =>
-        setCellValue(e.target.value)
-      }
+      onChange={(e: { target: { value: unknown } }) => {
+        if (type === "number") {
+          if (/^\d*$/.test(String(e.target.value))) {
+            setCellValue(e.target.value);
+          }
+        } else {
+          setCellValue(e.target.value);
+        }
+      }}
       onDoubleClick={() => setIsEditing(true)}
       onKeyDown={(e: { key: string }) => {
         if (!isEditing && e.key !== "Enter" && e.key !== "Tab") {
