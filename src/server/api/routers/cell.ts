@@ -213,14 +213,14 @@ export const cellRouter = createTRPCRouter({
         });
       });
       console.log(input.searchInput)
-      // const searchedRows = filteredRows.filter((row) =>
-      //   row.cells.some((cell) =>
-      //     String(cell.value).includes(input.searchInput)
-      //   )
-      // );
+      const searchedRows = filteredRows.filter((row) =>
+        row.cells.some((cell) =>
+          String(cell.value).includes(input.searchInput)
+        )
+      );
 
       return {
-        rows: filteredRows,
+        rows: searchedRows,
         nextCursor,
       };
     }),
