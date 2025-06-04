@@ -15,7 +15,7 @@ export function SearchBox({ setSearchInput }: SearchBoxProps) {
   return (
     <div>
       <Input
-        className="h-[4vh] focus-visible:ring-0"
+        className="m-0 h-[4vh] py-2 focus-visible:ring-0"
         type="text"
         placeholder="Search..."
         onChange={(e) => handleChange(e.target.value)}

@@ -37,7 +37,6 @@ export function TableAddButton({
       setOpen(false);
       setSelectedTable(newTable!.id);
       setViewId(newTable!.view?.[0]!.id);
-      console.log(newTable?.view?.[0]?.id);
       await utils.base.invalidate();
       await utils.table.invalidate();
     },

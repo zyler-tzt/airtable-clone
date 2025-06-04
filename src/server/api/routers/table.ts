@@ -165,8 +165,6 @@ export const tableRouter = createTRPCRouter({
         where: { tableId: input.tableId },
       });
 
-      console.log(views);
-
       await Promise.all(
         views.map((view) =>
           ctx.db.viewField.create({

@@ -1,5 +1,7 @@
 import { BaseDisplay } from "../_components/basePage/baseDisplay";
+import { auth } from "~/server/auth";
 
 export default async function BasePage() {
-  return <BaseDisplay />;
+  const session = await auth();
+  return <BaseDisplay name={session?.user.name} />;
 }

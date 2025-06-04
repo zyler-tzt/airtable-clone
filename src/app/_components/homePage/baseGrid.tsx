@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 
 export function BaseGrid() {
   const { data: session } = useSession();
-  console.log(session);
   const { data: bases, isLoading } = api.base.getBases.useQuery({
     userId: session?.user.id ?? "",
   });

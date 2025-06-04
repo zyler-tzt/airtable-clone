@@ -193,7 +193,6 @@ export const cellRouter = createTRPCRouter({
             value = cell.value;
           }
           const target = filter.value
-          console.log(`T${filter.operator}T`)
           switch (filter.operator) {
             case "is_empty":
               return value === undefined || value === null || value === "";

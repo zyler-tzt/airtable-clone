@@ -42,7 +42,7 @@ export function ViewAddButton({ tableId, setViewId }: ViewAddButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-[80%] bg-green-700 py-0 text-sm">
+        <Button className="mt-auto w-[80%] bg-green-700 py-0 text-sm">
           Create new view
         </Button>
       </DialogTrigger>

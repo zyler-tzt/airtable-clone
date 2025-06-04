@@ -24,7 +24,6 @@ export function TableCell({ value, type }: TableCellProps) {
     const newVal = value.getValue();
     setCellExist(!!newVal);
     setCellValue(newVal);
-    console.log(value.getValue());
   }, [value.getValue()]);
 
   function parseValue(value: unknown) {

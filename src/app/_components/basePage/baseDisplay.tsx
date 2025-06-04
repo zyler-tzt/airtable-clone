@@ -12,7 +12,11 @@ import { BaseTools } from "./baseTools";
 import { TableViewList } from "~/app/_components/basePage/views/tableViewList";
 import type { Field, View } from "@prisma/client";
 
-export function BaseDisplay() {
+type BaseDisplayProps = {
+  name: string | undefined | null;
+};
+
+export function BaseDisplay({ name }: BaseDisplayProps) {
   const { base: slug } = useParams();
   const [selectedTableId, setSelectedTableId] = useState<number | undefined>(
     undefined,
@@ -61,7 +65,7 @@ export function BaseDisplay() {
   if (!currentViewId) {
     return (
       <div>
-        <BaseHeader baseName={base?.name} />
+        <BaseHeader userName={name} baseName={base?.name} />
         <BaseTableList
           setViewId={setViewId}
           views={table!.view}
@@ -75,7 +79,7 @@ export function BaseDisplay() {
 
   return (
     <div className="flex flex-col">
-      <BaseHeader baseName={base?.name} />
+      <BaseHeader userName={name} baseName={base?.name} />
       <BaseTableList
         setViewId={setViewId}
         views={table!.view}
@@ -93,7 +97,7 @@ export function BaseDisplay() {
         setSearchInput={setSearchInput}
       />
       <div className="flex flex-row">
-        <div className={`w-[15vw] ${openViewList === false ? "hidden" : ""}`}>
+        <div className={`w-[20vw] ${openViewList === false ? "hidden" : ""}`}>
           <TableViewList
             tableId={selectedTableId}
             viewData={table?.view}
@@ -101,7 +105,7 @@ export function BaseDisplay() {
             setViewId={setViewId}
           />
         </div>
-        <div className={`${openViewList === true ? "w-[85vw]" : "w-full"}`}>
+        <div className={`${openViewList === true ? "w-[80vw]" : "w-full"}`}>
           {table ? (
             <TableDisplay
               columns={tableColumns!}
