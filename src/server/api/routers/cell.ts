@@ -212,13 +212,12 @@ export const cellRouter = createTRPCRouter({
           }
         });
       });
-      console.log(input.searchInput)
-      const searchedRows = filteredRows.filter((row) =>
-        row.cells.some((cell) =>
-          String(cell.value).includes(input.searchInput)
+      const searchedRows = filteredRows.filter((row) => {
+        if (row.cells.length === 0 && input.searchInput.trim() === "") return true
+        return row.cells.some((cell) =>
+          String(cell.value).includes(input.searchInput.trim())
         )
-      );
-
+      });
       return {
         rows: searchedRows,
         nextCursor,
