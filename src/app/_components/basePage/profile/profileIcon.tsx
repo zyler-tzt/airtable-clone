@@ -23,8 +23,8 @@ type ProfileIconProps = {
 export function ProfileIcon({ firstName }: ProfileIconProps) {
   const initial = getInitials(firstName);
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
