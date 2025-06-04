@@ -81,7 +81,7 @@ export const cellRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const ROW_TO_CREATE = 100;
+      const ROW_TO_CREATE = 10000;
       const rowsData = Array.from({ length: ROW_TO_CREATE }, () => ({
         tableId: input.tableId,
       }));
