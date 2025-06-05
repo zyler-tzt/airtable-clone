@@ -101,7 +101,7 @@ export const cellRouter = createTRPCRouter({
           value:
             field.fieldType === "text"
               ? faker.person.firstName()
-              : faker.number.int(),
+              : faker.number.int().toString(),
           fieldId: field.fieldId,
           rowId: row.id,
         })),
