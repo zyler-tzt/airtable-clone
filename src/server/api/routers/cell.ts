@@ -145,7 +145,7 @@ export const cellRouter = createTRPCRouter({
           orderBy:
             sort.field.type === "number"
               ? `CAST(${cellAlias}.value AS NUMERIC) ${sort.order.toUpperCase()}`
-              : `${cellAlias}.value ${sort.order.toUpperCase()}`,
+              : `LOWER(${cellAlias}.value) ${sort.order.toUpperCase()}`,
         };
       });
 
@@ -160,7 +160,7 @@ export const cellRouter = createTRPCRouter({
       FROM "Row"
       ${joins}
       WHERE "Row"."tableId" = ${input.tableId}
-      ORDER BY LOWER(${finalOrderBy})
+      ORDER BY ${finalOrderBy}
       LIMIT ${input.limit + 1}
       OFFSET ${input.cursor}
     `;
