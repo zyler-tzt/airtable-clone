@@ -160,7 +160,7 @@ export const cellRouter = createTRPCRouter({
       FROM "Row"
       ${joins}
       WHERE "Row"."tableId" = ${input.tableId}
-      ORDER BY ${finalOrderBy}
+      ORDER BY LOWER(${finalOrderBy})
       LIMIT ${input.limit + 1}
       OFFSET ${input.cursor}
     `;
