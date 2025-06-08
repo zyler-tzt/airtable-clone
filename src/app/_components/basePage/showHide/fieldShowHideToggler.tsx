@@ -28,20 +28,20 @@ export function FieldShowHideToggler({
 
   const createViewFieldMutation = api.view.createViewField.useMutation({
     onMutate: async () => {
-      await utils.table.getFields.cancel();
+      await utils.table.getAllFields.cancel();
       await utils.cell.infiniteRows.invalidate();
     },
     onSuccess: async () => {
-      await utils.table.getFields.invalidate();
+      await utils.table.getAllFields.invalidate();
     },
   });
   const deleteViewFieldMutation = api.view.deleteViewField.useMutation({
     onMutate: async () => {
-      await utils.table.getFields.cancel();
+      await utils.table.getAllFields.cancel();
       await utils.cell.infiniteRows.invalidate();
     },
     onSuccess: async () => {
-      await utils.table.getFields.invalidate();
+      await utils.table.getAllFields.invalidate();
     },
   });
 
