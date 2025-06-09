@@ -77,12 +77,72 @@ export function TableCell({ value, type }: TableCellProps) {
       }}
       onDoubleClick={() => setIsEditing(true)}
       onKeyDown={(e: { key: string }) => {
-        if (!isEditing && e.key !== "Enter" && e.key !== "Tab") {
+        if (
+          !isEditing &&
+          e.key !== "Enter" &&
+          e.key !== "Tab" &&
+          e.key !== "ArrowLeft" &&
+          e.key !== "ArrowUp" &&
+          e.key !== "ArrowDown" &&
+          e.key !== "ArrowRight"
+        ) {
           setIsEditing(true);
           setCellValue("");
         }
         if (e.key === "Enter") {
           const nextRow = value.table.getRowModel().rows[rowIndex + 1];
+          const nextRowId = nextRow?.original.id;
+          const nextInput = document.getElementById(
+            `${nextRowId}-${value.column.id}`,
+          );
+
+          if (nextInput) {
+            nextInput.focus();
+          }
+        }
+        if (e.key === "ArrowLeft") {
+          const allColumns = value.table.getVisibleLeafColumns();
+          const currentIndex = allColumns.findIndex(
+            (col) => col.id === value.column.id,
+          );
+          console.log(currentIndex);
+          const prevCol = allColumns[currentIndex - 1]?.id;
+          const nextRow = value.table.getRowModel().rows[rowIndex];
+          const nextRowId = nextRow?.original.id;
+          const nextInput = document.getElementById(`${nextRowId}-${prevCol}`);
+
+          if (nextInput) {
+            nextInput.focus();
+          }
+        }
+        if (e.key === "ArrowRight") {
+          const allColumns = value.table.getVisibleLeafColumns();
+          const currentIndex = allColumns.findIndex(
+            (col) => col.id === value.column.id,
+          );
+          console.log(currentIndex);
+          const prevCol = allColumns[currentIndex + 1]?.id;
+          const nextRow = value.table.getRowModel().rows[rowIndex];
+          const nextRowId = nextRow?.original.id;
+          const nextInput = document.getElementById(`${nextRowId}-${prevCol}`);
+
+          if (nextInput) {
+            nextInput.focus();
+          }
+        }
+        if (e.key === "ArrowDown") {
+          const nextRow = value.table.getRowModel().rows[rowIndex + 1];
+          const nextRowId = nextRow?.original.id;
+          const nextInput = document.getElementById(
+            `${nextRowId}-${value.column.id}`,
+          );
+
+          if (nextInput) {
+            nextInput.focus();
+          }
+        }
+        if (e.key === "ArrowUp") {
+          const nextRow = value.table.getRowModel().rows[rowIndex - 1];
           const nextRowId = nextRow?.original.id;
           const nextInput = document.getElementById(
             `${nextRowId}-${value.column.id}`,
