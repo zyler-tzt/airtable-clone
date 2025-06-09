@@ -24,9 +24,9 @@ export function BaseTableList({
   views,
 }: BaseTableListProps) {
   return (
-    <div className="scrollbar-none h-[5vh] w-full overflow-x-auto bg-green-800 whitespace-nowrap">
+    <div className="scrollbar-none h-[4vh] w-full overflow-x-auto bg-green-800 whitespace-nowrap">
       {base && (
-        <div className="flex h-9 w-max flex-row items-center justify-center px-5">
+        <div className="flex h-[4vh] w-max flex-row items-center justify-center px-5">
           {base.tables.map((table) => {
             return (
               <TableItem

@@ -17,10 +17,10 @@ export function TableViewList({
 }: TableViewListProps) {
   return (
     <div className="flex h-full flex-col items-center justify-center p-2">
-      <div className="mb-2 w-[80%] px-2 text-left text-sm select-none">
+      <div className="flex h-[7%] w-[80%] items-center px-2 text-left text-sm select-none">
         Views
       </div>
-      <div className="flex w-full flex-1 flex-col items-center gap-1 overflow-auto">
+      <div className="flex h-[80%] w-full flex-1 flex-col items-center gap-1 overflow-auto">
         {viewData?.map((v) => {
           return (
             <div
@@ -40,8 +40,8 @@ export function TableViewList({
             </div>
           );
         })}
-        <ViewAddButton tableId={tableId} setViewId={setViewId} />
       </div>
+      <ViewAddButton tableId={tableId} setViewId={setViewId} />
     </div>
   );
 }

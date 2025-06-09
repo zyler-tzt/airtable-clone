@@ -96,7 +96,7 @@ export function BaseDisplay({ name }: BaseDisplayProps) {
         viewId={currentViewId}
         setSearchInput={setSearchInput}
       />
-      <div className="flex flex-row">
+      <div className="flex h-[81.5vh] flex-row">
         <div className={`w-[20vw] ${openViewList === false ? "hidden" : ""}`}>
           <TableViewList
             tableId={selectedTableId}
