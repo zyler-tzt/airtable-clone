@@ -28,7 +28,7 @@ export function HideShowButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="my-1 flex flex-row items-center justify-center gap-1 rounded-sm px-2 py-2 text-xs select-none hover:bg-gray-200">
+        <div className="my-1 flex cursor-pointer flex-row items-center justify-center gap-1 rounded-sm px-2 py-2 text-xs select-none hover:bg-gray-200">
           <Image
             src="/hide-field.svg"
             alt="hideFieldIcon"

@@ -71,7 +71,7 @@ export function TableItem({
     >
       <DropdownMenuTrigger asChild>
         <div
-          className={`${table.id === selectedTable ? "bg-white px-6" : "px-3 text-white"} flex h-full items-center justify-center text-xs select-none`}
+          className={`${table.id === selectedTable ? "bg-white px-6" : "px-3 text-white"} flex h-full cursor-pointer items-center justify-center text-xs select-none`}
           style={{ borderTopLeftRadius: "4px", borderTopRightRadius: "4px" }}
           onClick={() => {
             if (table.id !== selectedTable) {
@@ -96,7 +96,7 @@ export function TableItem({
                 setIsOpen(false);
                 await deleteTableHandler();
               }}
-              className={`w-15 select-none`}
+              className={`w-15 cursor-pointer select-none`}
               disabled={allTables.length === 1}
             >
               Delete
@@ -106,7 +106,7 @@ export function TableItem({
                 setIsOpen(false);
                 await updateTableHandler();
               }}
-              className="w-15 select-none"
+              className="w-15 cursor-pointer select-none"
             >
               Save
             </Button>

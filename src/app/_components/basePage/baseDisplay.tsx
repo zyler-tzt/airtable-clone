@@ -28,6 +28,7 @@ export function BaseDisplay({ name }: BaseDisplayProps) {
     undefined,
   );
   const [searchInput, setSearchInput] = useState("");
+  const [viewData, setViewData] = useState<View[] | undefined>([]);
 
   const { data: base, isLoading: isBaseLoading } =
     api.base.getBaseBySlug.useQuery({ slug: slug as string });
@@ -41,6 +42,7 @@ export function BaseDisplay({ name }: BaseDisplayProps) {
     api.table.getTableByTableId.useQuery({ tableId: selectedTableId ?? -1 });
   useEffect(() => {
     if (currentViewId === undefined) setViewId(table?.view?.[0]?.id);
+    setViewData(table?.view.sort((a, b) => a.id - b.id));
   }, [table]);
 
   const { data: columns } = api.table.getFields.useQuery({
@@ -100,9 +102,10 @@ export function BaseDisplay({ name }: BaseDisplayProps) {
         <div className={`w-[20vw] ${openViewList === false ? "hidden" : ""}`}>
           <TableViewList
             tableId={selectedTableId}
-            viewData={table?.view}
+            viewData={viewData}
             currentViewId={currentViewId}
             setViewId={setViewId}
+            setViewData={setViewData}
           />
         </div>
         <div className={`${openViewList === true ? "w-[80vw]" : "w-full"}`}>

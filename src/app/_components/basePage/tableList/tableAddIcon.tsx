@@ -50,7 +50,7 @@ export function TableAddButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex items-center justify-center p-5 select-none">
+        <div className="flex cursor-pointer items-center justify-center p-5 select-none">
           <Image
             src="/add-lucide2.svg"
             alt="addTableIcon"
@@ -84,7 +84,11 @@ export function TableAddButton({
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={tableCreateHandler} disabled={createTable.isPending}>
+          <Button
+            onClick={tableCreateHandler}
+            disabled={createTable.isPending}
+            className="cursor-pointer"
+          >
             Create Table
           </Button>
         </DialogFooter>

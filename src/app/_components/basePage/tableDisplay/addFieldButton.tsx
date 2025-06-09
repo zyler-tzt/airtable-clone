@@ -56,7 +56,7 @@ export function AddFieldButton({ tableId }: AddFieldButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex h-full w-full items-center justify-center select-none">
+        <div className="flex h-full w-full cursor-pointer items-center justify-center py-1.5 select-none">
           <Image
             src="/add-lucide3.svg"
             alt="addFieldIcon"

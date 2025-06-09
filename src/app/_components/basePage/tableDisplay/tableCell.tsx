@@ -1,7 +1,7 @@
 import type { RowData } from "./tableDisplay";
 import type { CellContext } from "@tanstack/react-table";
 import { Input } from "../../ui/input";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "~/trpc/react";
 import { toast } from "sonner";
 
@@ -15,11 +15,14 @@ export function TableCell({ value, type }: TableCellProps) {
   const fieldId = parseInt(value.column.id);
   const rowIndex = value.row.index;
   const [isEditing, setIsEditing] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
+  const elementRef = useRef(null);
+  const cellV = value.getValue();
 
   const utils = api.useUtils();
 
   const [cellExist, setCellExist] = useState(value.getValue() ? true : false);
-  const [cellValue, setCellValue] = useState(value.getValue());
+  const [cellValue, setCellValue] = useState(cellV);
 
   useEffect(() => {
     const newVal = value.getValue();
@@ -38,20 +41,38 @@ export function TableCell({ value, type }: TableCellProps) {
   }
 
   const deleteCell = api.cell.deleteCell.useMutation({
+    onMutate: async () => {
+      await utils.cell.infiniteRows.cancel();
+    },
     onSuccess: async () => {
       setCellExist(false);
+      await utils.cell.infiniteRows.invalidate();
     },
   });
 
-  const updateCell = api.cell.updateCell.useMutation({});
+  const updateCell = api.cell.updateCell.useMutation({
+    onMutate: async () => {
+      await utils.cell.infiniteRows.cancel();
+    },
+    onSuccess: async () => {
+      await utils.cell.infiniteRows.invalidate();
+    },
+  });
 
   const createCell = api.cell.createCell.useMutation({
+    onMutate: async () => {
+      await utils.cell.infiniteRows.cancel();
+    },
     onSuccess: async () => {
       setCellExist(true);
+      await utils.cell.infiniteRows.invalidate();
     },
   });
 
   async function changeCellHandler() {
+    if (cellValue === value.getValue()) {
+      return;
+    }
     const newVal = parseValue(cellValue).trim();
     if (newVal === "" && cellExist)
       await deleteCell.mutateAsync({ fieldId, rowId });
@@ -64,6 +85,7 @@ export function TableCell({ value, type }: TableCellProps) {
   return (
     <Input
       className="m-0 h-full w-full rounded-none border-0 !text-xs"
+      ref={elementRef}
       id={`${rowId}-${fieldId}`}
       autoComplete="off"
       value={parseValue(cellValue)}
@@ -87,8 +109,14 @@ export function TableCell({ value, type }: TableCellProps) {
           setCellValue(e.target.value);
         }
       }}
+      onClick={(e) => {
+        if (isFocus) {
+          setIsEditing(true);
+        }
+        setIsFocus(true);
+      }}
       onDoubleClick={() => setIsEditing(true)}
-      onKeyDown={(e: { key: string }) => {
+      onKeyDown={(e) => {
         if (
           !isEditing &&
           e.key !== "Enter" &&
@@ -113,6 +141,8 @@ export function TableCell({ value, type }: TableCellProps) {
           }
         }
         if (e.key === "ArrowLeft") {
+          e.preventDefault();
+
           const allColumns = value.table.getVisibleLeafColumns();
           const currentIndex = allColumns.findIndex(
             (col) => col.id === value.column.id,
@@ -127,11 +157,12 @@ export function TableCell({ value, type }: TableCellProps) {
           }
         }
         if (e.key === "ArrowRight") {
+          e.preventDefault();
+
           const allColumns = value.table.getVisibleLeafColumns();
           const currentIndex = allColumns.findIndex(
             (col) => col.id === value.column.id,
           );
-          console.log(currentIndex);
           const prevCol = allColumns[currentIndex + 1]?.id;
           const nextRow = value.table.getRowModel().rows[rowIndex];
           const nextRowId = nextRow?.original.id;
@@ -142,6 +173,8 @@ export function TableCell({ value, type }: TableCellProps) {
           }
         }
         if (e.key === "ArrowDown") {
+          e.preventDefault();
+
           const nextRow = value.table.getRowModel().rows[rowIndex + 1];
           const nextRowId = nextRow?.original.id;
           const nextInput = document.getElementById(
@@ -153,6 +186,8 @@ export function TableCell({ value, type }: TableCellProps) {
           }
         }
         if (e.key === "ArrowUp") {
+          e.preventDefault();
+
           const nextRow = value.table.getRowModel().rows[rowIndex - 1];
           const nextRowId = nextRow?.original.id;
           const nextInput = document.getElementById(
@@ -167,6 +202,7 @@ export function TableCell({ value, type }: TableCellProps) {
       onBlur={() => {
         void changeCellHandler();
         setIsEditing(false);
+        setIsFocus(false);
       }}
     />
   );

@@ -108,7 +108,7 @@ export function TableDisplay({
         },
         header: () => {
           return (
-            <div className="flex h-full w-full items-center px-3">
+            <div className="flex h-full w-full items-center border-r-1 border-gray-200 bg-gray-50 px-3 py-2">
               <span className="truncate">{field.name}</span>
             </div>
           );
@@ -123,7 +123,11 @@ export function TableDisplay({
     {
       id: "addCols",
       header: () => {
-        return <AddFieldButton tableId={tableData.id} />;
+        return (
+          <div className="h-full w-full border-r-1 border-gray-200 bg-gray-50">
+            <AddFieldButton tableId={tableData.id} />
+          </div>
+        );
       },
       cell: () => null,
       size: 60,
@@ -204,7 +208,7 @@ export function TableDisplay({
             {headerGroup.headers.map((header) => (
               <div
                 key={header.id}
-                className={`flex h-7 flex-shrink-0 items-center justify-center border-r-1 border-gray-200 bg-gray-50 py-2 text-xs`}
+                className={`flex h-full flex-shrink-0 items-center justify-center text-xs`}
                 style={{ width: header.getSize() }}
               >
                 {flexRender(

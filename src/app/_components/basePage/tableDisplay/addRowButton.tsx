@@ -22,7 +22,7 @@ export function AddRowButton({ tableId }: AddRowButtonProps) {
 
   return (
     <div
-      className="flex h-full w-full items-center justify-center select-none"
+      className="flex h-full w-full cursor-pointer items-center justify-center select-none"
       onClick={rowCreateHandler}
     >
       <Image
