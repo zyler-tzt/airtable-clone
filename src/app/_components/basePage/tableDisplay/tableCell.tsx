@@ -64,6 +64,7 @@ export function TableCell({ value, type }: TableCellProps) {
     <Input
       className="m-0 h-full w-full rounded-none border-0 !text-xs"
       id={`${rowId}-${fieldId}`}
+      autoComplete="off"
       value={parseValue(cellValue)}
       readOnly={!isEditing}
       onChange={(e: { target: { value: unknown } }) => {
