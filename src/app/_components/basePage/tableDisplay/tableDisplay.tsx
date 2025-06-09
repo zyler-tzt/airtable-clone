@@ -107,7 +107,11 @@ export function TableDisplay({
           return row.cells.find((c) => c.fieldId === field.id)?.value ?? "";
         },
         header: () => {
-          return <div className="h-full w-full px-3">{field.name}</div>;
+          return (
+            <div className="flex h-full w-full items-center px-3">
+              <span className="truncate">{field.name}</span>
+            </div>
+          );
         },
         meta: { type: field.type },
         cell: (value: CellContext<ExtendedRowData, unknown>) => {
