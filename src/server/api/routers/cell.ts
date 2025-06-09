@@ -199,13 +199,17 @@ export const cellRouter = createTRPCRouter({
             case "is_not_empty":
               return value !== undefined && value !== null && value !== "";
             case "is":
-              return String(value) === String(target) || (value === undefined && target === "")
+              return String(value) === String(target) || (value === undefined && target === "");
             case "is_not":
-              return String(value) !== String(target) && ((value === undefined && target !== "") || (value !== undefined && target === ""))
+              return String(value) !== String(target) && ((value === undefined && target !== "") || (value !== undefined && target === ""));
             case "contains":
               return String(value).toLowerCase().includes(String(target).toLowerCase());
             case "does_not_contain":
               return !String(value).toLowerCase().includes(String(target).toLowerCase());
+            case "is_greater_than":
+              return parseInt(value ?? "0") > parseInt(target) || target === "" || isNaN(parseInt(target));
+            case "is_less_than":
+              return parseInt(value ?? "0") < parseInt(target) || target === "" || isNaN(parseInt(target));
             default:
               return false;
           }

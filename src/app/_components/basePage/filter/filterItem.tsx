@@ -122,6 +122,16 @@ export function FilterItem({
               <SelectItem value="is not empty" className="text-xs">
                 is not empty...
               </SelectItem>
+              {field.type === "number" && (
+                <>
+                  <SelectItem value="is greater than" className="text-xs">
+                    is greater than...
+                  </SelectItem>
+                  <SelectItem value="is less than" className="text-xs">
+                    is less than...
+                  </SelectItem>
+                </>
+              )}
             </SelectGroup>
           </SelectContent>
         </Select>
