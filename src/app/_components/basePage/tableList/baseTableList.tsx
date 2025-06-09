@@ -52,5 +52,5 @@ export function BaseTableList({
 }
 
 export function EmptyBaseTableList() {
-  return <div className="h-[5vh] w-full bg-green-800"></div>;
+  return <div className="h-[4vh] w-full bg-green-800"></div>;
 }
