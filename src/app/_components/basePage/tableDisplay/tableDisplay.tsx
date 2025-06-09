@@ -197,14 +197,14 @@ export function TableDisplay({
   }
 
   return (
-    <div className="text-xs">
-      <div className="sticky top-0 border border-gray-200 bg-gray-50">
+    <div className="scrollbar-none w-full overflow-auto text-xs">
+      <div className="border border-gray-200 bg-gray-50">
         {table.getHeaderGroups().map((headerGroup) => (
           <div key={headerGroup.id} className="flex">
             {headerGroup.headers.map((header) => (
               <div
                 key={header.id}
-                className={`flex h-7 flex-shrink-0 items-center justify-center border-r border-gray-200 bg-gray-50 py-2 text-xs last:border-r-0`}
+                className={`flex h-7 flex-shrink-0 items-center justify-center border-r-1 border-gray-200 bg-gray-50 py-2 text-xs`}
                 style={{ width: header.getSize() }}
               >
                 {flexRender(
@@ -218,7 +218,7 @@ export function TableDisplay({
       </div>
       <div
         ref={tableParentRef}
-        className="h-[68vh] w-full overflow-auto border-l border-gray-200"
+        className="h-[68vh] w-full border-l border-gray-200"
       >
         <div
           className="relative w-full"
@@ -261,7 +261,7 @@ export function TableDisplay({
                   return (
                     <div
                       key={cell.id}
-                      className={`flex items-center border-r border-b border-gray-200 text-sm hover:bg-gray-50 ${classParser(cell.column.columnDef.meta)}`}
+                      className={`flex flex-shrink-0 items-center border-r border-b border-gray-200 text-sm hover:bg-gray-50 ${classParser(cell.column.columnDef.meta)}`}
                       style={{ width: cell.column.getSize() }}
                     >
                       {flexRender(
