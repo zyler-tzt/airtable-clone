@@ -218,7 +218,7 @@ export function TableDisplay({
       </div>
       <div
         ref={tableParentRef}
-        className="h-[68vh] w-full border-l border-gray-200"
+        className="h-[78vh] w-full overflow-y-auto border-l border-gray-200"
       >
         <div
           className="relative w-full"
@@ -271,6 +271,7 @@ export function TableDisplay({
                     </div>
                   );
                 })}
+                <div>{null}</div>
               </div>
             );
           })}
