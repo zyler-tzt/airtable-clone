@@ -21,7 +21,7 @@ export function TableViewList({
   const deleteView = api.view.deleteView.useMutation({
     onSuccess: async () => {
       await utils.table.invalidate();
-      setViewId(viewData?.[0]?.id!);
+      setViewId(viewData?.[0]?.id ?? -1);
     },
   });
 
