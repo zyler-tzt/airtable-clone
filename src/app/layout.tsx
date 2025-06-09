@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "~/app/_components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "AirtableClone",
@@ -26,6 +27,7 @@ export default function RootLayout({
         <TRPCReactProvider>
           <SessionProvider>{children}</SessionProvider>
         </TRPCReactProvider>
+        <Toaster />
       </body>
     </html>
   );

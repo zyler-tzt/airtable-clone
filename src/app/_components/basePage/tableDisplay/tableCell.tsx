@@ -3,6 +3,7 @@ import type { CellContext } from "@tanstack/react-table";
 import { Input } from "../../ui/input";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
+import { toast } from "sonner";
 
 interface TableCellProps {
   value: CellContext<RowData, unknown>;
@@ -71,6 +72,16 @@ export function TableCell({ value, type }: TableCellProps) {
         if (type === "number") {
           if (/^\d*$/.test(String(e.target.value))) {
             setCellValue(e.target.value);
+          } else {
+            toast(
+              <div className="text-xs">
+                <span className="text-red-500">Invalid action: </span>
+                <span>
+                  You cannot make a non-number input in <b>Number</b> field
+                </span>
+              </div>,
+              {},
+            );
           }
         } else {
           setCellValue(e.target.value);
@@ -106,7 +117,6 @@ export function TableCell({ value, type }: TableCellProps) {
           const currentIndex = allColumns.findIndex(
             (col) => col.id === value.column.id,
           );
-          console.log(currentIndex);
           const prevCol = allColumns[currentIndex - 1]?.id;
           const nextRow = value.table.getRowModel().rows[rowIndex];
           const nextRowId = nextRow?.original.id;
