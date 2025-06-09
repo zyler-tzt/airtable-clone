@@ -126,7 +126,7 @@ export function TableDisplay({
         return <AddFieldButton tableId={tableData.id} />;
       },
       cell: () => null,
-      size: 40,
+      size: 60,
     },
   ];
 
