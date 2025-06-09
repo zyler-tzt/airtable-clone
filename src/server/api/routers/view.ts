@@ -34,6 +34,21 @@ export const viewRouter = createTRPCRouter({
       return view;
     }),
 
+  deleteView: protectedProcedure
+  .input(
+    z.object({
+      viewId: z.number(),
+    })
+  )
+  .mutation(async ({ ctx, input }) => {
+      await ctx.db.view.delete({
+        where: {
+          id: input.viewId,
+        },
+      });
+    }),
+
+
   createSort: protectedProcedure
     .input(
       z.object({
