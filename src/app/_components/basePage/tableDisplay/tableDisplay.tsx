@@ -92,7 +92,7 @@ export function TableDisplay({
   const tableColumns: ColumnDef<ExtendedRowData>[] = [
     {
       id: "rowNums",
-      header: "",
+      header: () => <div className="flex w-full h-8.25  border-l border-b bg-gray-50 hover:bg-gray-100"></div>,
       cell: (info) => <div className="text-xs">{info.row.index + 1}</div>,
       meta: { type: "id" },
       size: 60,
@@ -108,7 +108,7 @@ export function TableDisplay({
         },
         header: () => {
           return (
-            <div className="flex h-full w-full items-center border-r-1 border-gray-200 bg-gray-50 px-3 py-2">
+            <div className="flex h-full w-full items-center border-l border-b border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100">
               <span className="truncate">{field.name}</span>
             </div>
           );
@@ -124,7 +124,7 @@ export function TableDisplay({
       id: "addCols",
       header: () => {
         return (
-          <div className="h-full w-full border-r-1 border-gray-200 bg-gray-50">
+          <div className="h-full w-full border-l border-b border-r-1 border-gray-200 bg-gray-50 hover:bg-gray-100">
             <AddFieldButton tableId={tableData.id} />
           </div>
         );
@@ -201,10 +201,11 @@ export function TableDisplay({
   }
 
   return (
-    <div className="scrollbar-none w-full overflow-auto text-xs">
-      <div className="border border-gray-200 bg-gray-50">
+    <div className="scrollbar-none w-full overflow-auto text-xs" >
+      <div className="h-[82vh] pb-30 overflow-y-auto" ref={tableParentRef}>
+      <div className="w-full">
         {table.getHeaderGroups().map((headerGroup) => (
-          <div key={headerGroup.id} className="flex">
+          <div key={headerGroup.id} className="flex w-full border-gray-200 ">
             {headerGroup.headers.map((header) => (
               <div
                 key={header.id}
@@ -221,8 +222,7 @@ export function TableDisplay({
         ))}
       </div>
       <div
-        ref={tableParentRef}
-        className="h-[78vh] w-full overflow-y-auto border-l border-gray-200"
+        className="w-full border-l border-gray-200"
       >
         <div
           className="relative w-full"
@@ -252,7 +252,7 @@ export function TableDisplay({
                   if (cell.row.original.id === -1)
                     return (
                       <div
-                        key="addColButton"
+                        key="addRowButton"
                         className={`flex flex-shrink-0 items-center justify-center border-r border-b border-gray-200 text-sm hover:bg-gray-50`}
                         style={{ width: cell.column.getSize() }}
                       >
@@ -280,6 +280,7 @@ export function TableDisplay({
             );
           })}
         </div>
+      </div>
       </div>
       <Button
         variant="outline"

@@ -31,7 +31,7 @@ export function ProfileIcon({ firstName }: ProfileIconProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div
-          className="text-md flex cursor-pointer items-center justify-center border border-white font-bold text-white"
+          className="text-md flex cursor-pointer items-center justify-center border border-white text-white"
           style={{
             borderRadius: "50%",
             width: 30,

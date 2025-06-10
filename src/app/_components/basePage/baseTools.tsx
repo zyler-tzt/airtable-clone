@@ -25,7 +25,7 @@ export function BaseTools({
   setSearchInput,
 }: BaseToolsProps) {
   return (
-    <div className="flex h-[6vh] flex-row items-center justify-start gap-5 border-b-1 px-2 py-2 pl-3 text-xs shadow-sm">
+    <div className="flex h-[6vh] flex-row items-center justify-start gap-5 border-b-1 px-2 py-2 pl-3 text-xs shadow-xs z-10">
       <div
         className="my-1 flex cursor-pointer flex-row items-center justify-center gap-1 rounded-sm px-2 py-2 select-none hover:bg-gray-200"
         onClick={() => openViewSetter(!openView)}

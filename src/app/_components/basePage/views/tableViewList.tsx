@@ -37,7 +37,7 @@ export function TableViewList({
   }
 
   return (
-    <div className="flex h-[78vh] flex-col items-center p-2">
+    <div className="flex h-[82vh] flex-col items-center p-2 shadow-md">
       <div className="flex h-14 w-[80%] items-center px-2 text-left text-sm select-none">
         Views
       </div>
