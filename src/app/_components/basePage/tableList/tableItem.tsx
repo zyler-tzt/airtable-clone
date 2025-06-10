@@ -71,7 +71,7 @@ export function TableItem({
     >
       <DropdownMenuTrigger asChild>
         <div
-          className={`${table.id === selectedTable ? "bg-white px-6" : "px-3 text-white"} flex h-full cursor-pointer items-center justify-center text-xs select-none`}
+          className={`${table.id === selectedTable ? "bg-white px-6" : "px-3 text-white hover:bg-green-900"}  flex h-full cursor-pointer items-center justify-center text-xs select-none`}
           style={{ borderTopLeftRadius: "4px", borderTopRightRadius: "4px" }}
           onClick={() => {
             if (table.id !== selectedTable) {

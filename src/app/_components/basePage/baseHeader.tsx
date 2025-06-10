@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ProfileIcon } from "./profile/profileIcon";
-import { Separator } from "../ui/separator";
 
 type BaseHeaderProps = {
   baseName: string | undefined;

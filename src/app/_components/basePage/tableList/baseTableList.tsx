@@ -24,7 +24,8 @@ export function BaseTableList({
   views,
 }: BaseTableListProps) {
   return (
-    <div className="scrollbar-none h-[4vh] w-full overflow-x-auto bg-green-800 whitespace-nowrap">
+    <div className="flex flex-row bg-green-700 justify-between">
+<div className="rounded-tr-md scrollbar-none h-[4vh] w-[88%] overflow-x-auto  whitespace-nowrap bg-green-800">
       {base && (
         <div className="flex h-[4vh] w-max flex-row items-center justify-center px-5">
           {base.tables.map((table) => {
@@ -47,6 +48,15 @@ export function BaseTableList({
           />
         </div>
       )}
+    </div>
+    <div className="flex w-[11.5%] rounded-tl-md items-center justify-around flex-row bg-green-800">
+      <div className="cursor-pointer text-sm text-white/90">
+      Extensions
+      </div>
+      <div className="cursor-pointer text-sm text-white/90">
+        Tools
+      </div>
+    </div>
     </div>
   );
 }

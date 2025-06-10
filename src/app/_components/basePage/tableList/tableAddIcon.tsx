@@ -50,7 +50,7 @@ export function TableAddButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex cursor-pointer items-center justify-center p-5 select-none">
+        <div className="text-xs text-white/80 hover:text-white/100 flex cursor-pointer items-center justify-center p-5 select-none">
           <Image
             src="/add-lucide2.svg"
             alt="addTableIcon"
@@ -58,6 +58,7 @@ export function TableAddButton({
             width={20}
             height={20}
           />
+          Add or import
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
